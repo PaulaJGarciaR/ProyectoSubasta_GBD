@@ -44,7 +44,10 @@ function LoginPage() {
               <div className="block">
                 <h1 className="text-white font-bold text-sm">¿Aún no eres parte de Subasta.com?</h1>
                 <div className="flex justify-center mt-4">
-                  <button className="bg-transparent border-3 border-white px-6 py-2 rounded-xl text-white font-bold hover:bg-white hover:text-[#FF6F3C]">Registrate</button>
+                  <link/>
+                  <button className="bg-transparent border-3 border-white px-6 py-2 rounded-xl text-white font-bold hover:bg-white hover:text-[#FF6F3C]">
+                    Registrate
+                  </button>
                 </div>
                 
               </div>
