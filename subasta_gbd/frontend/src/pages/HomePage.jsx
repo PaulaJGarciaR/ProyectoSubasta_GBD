@@ -1,6 +1,64 @@
 import { Link } from "react-router-dom";
+import React, { useState } from 'react';
 
 function HomePage() {
+
+  // Estado para el carrusel
+  const [currentSlide, setCurrentSlide] = useState(0);
+  
+  // Datos del carrusel de productos
+  const products = [
+    {
+      id: 1,
+      title: "Classic 1995 Toyota Land Cruiser",
+      description: "Vehículo Toyota Land Cruiser en su testimonio histórico original, excelente para coleccionistas y entusiastas de Toyota. Perfecto para coleccionistas y entusiastas.",
+      image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80",
+      features: [
+        "Fecha límite el modelo de 1995",
+        "Test de Inventario Disponible 24/7", 
+        "Perfecto para coleccionista",
+        "Inspección de la mercancía"
+      ],
+      location: "San Salvatoriano 2024 Monterrey"
+    },
+    {
+      id: 2,
+      title: "Mercedes-Benz Clase C 2018",
+      description: "Sedán de lujo en excelente estado, ideal para ejecutivos que buscan elegancia y performance. Motor turbo de alta eficiencia.",
+      image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80",
+      features: [
+        "Motor 2.0L Turbo",
+        "Transmisión automática 9G-TRONIC",
+        "Sistema de navegación COMAND",
+        "Asientos de cuero premium"
+      ],
+      location: "Centro de Subastas Guadalajara"
+    },
+    {
+      id: 3,
+      title: "Ford Mustang GT 2020",
+      description: "Muscle car americano con motor V8, perfecto para amantes de la velocidad y el estilo clásico americano con tecnología moderna.",
+      image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80",
+      features: [
+        "Motor V8 5.0L Coyote",
+        "450 HP de potencia",
+        "Sistema SYNC 3",
+        "Performance Package incluido"
+      ],
+      location: "Subasta Premium México DF"
+    }
+  ];
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % products.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + products.length) % products.length);
+  };
+
+  const currentProduct = products[currentSlide];
+
   return (
     <div className="w-full">
       <nav className="flex items-center justify-between bg-[#1F3B4D] px-8 py-4 text-white">
@@ -152,10 +210,116 @@ function HomePage() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-r from-[#1F3B4D] to-[#182F3E] rounded-2xl overflow-hidden flex shadow-2xl">
-            carrusel  
-          </div>
+          {/* Carrusel de productos destacados */}
+          <div className="bg-gradient-to-r from-[#1F3B4D] to-[#182F3E] rounded-2xl overflow-hidden shadow-2xl">
+            <div className="flex">
+              {/* Imagen del producto actual */}
+              <div className="h-[500px] w-[500px] relative overflow-hidden">
+                <img 
+                  src={currentProduct.image}
+                  alt={currentProduct.title}
+                  className="w-full h-full object-cover object-center transition-all duration-500"
+                />
+                
+                {/* Overlay con información del vehículo */}
+                <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-sm text-white px-4 py-2 rounded-lg border border-white/20">
+                  <span className="font-semibold">Producto {currentSlide + 1} de {products.length}</span>
+                </div>
+                
+                {/* Flechas de navegación del carrusel */}
+                <div className="absolute left-4 top-1/2 -translate-y-1/2">
+                  <button 
+                    onClick={prevSlide}
+                    className="w-10 h-10 bg-[#F47C3C] hover:bg-[#FF6F3C] rounded-full flex items-center justify-center text-white shadow-lg hover:shadow-xl transition-all duration-200 backdrop-blur-sm"
+                  >
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                  <button 
+                    onClick={nextSlide}
+                    className="w-10 h-10 bg-[#F47C3C] hover:bg-[#FF6F3C] rounded-full flex items-center justify-center text-white shadow-lg hover:shadow-xl transition-all duration-200 backdrop-blur-sm"
+                  >
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              
+              {/* Información del producto actual */}
+              <div className="flex-1 p-8 text-white">
+                <h3 className="text-3xl font-bold mb-4">
+                  {currentProduct.title.split(' ').map((word, index) => 
+                    index === currentProduct.title.split(' ').length - 1 ? 
+                    <span key={index} className="text-[#F47C3C]">{word}</span> : 
+                    <span key={index}>{word} </span>
+                  )}
+                </h3>
+                
+                <p className="text-[#D6DEE3] text-base mb-6 leading-relaxed">
+                  {currentProduct.description}
+                </p>
+                
+                {/* Características del producto actual */}
+                <div className="mb-6">
+                  <div className="inline-block bg-[#F47C3C] text-white px-4 py-2 rounded-lg text-sm font-bold mb-4 shadow-lg">
+                    Características Principales:
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <div className="flex items-center text-[#D6DEE3]">
+                        <div className="w-2 h-2 bg-[#F47C3C] rounded-full mr-3 shadow-sm"></div>
+                        <span>{currentProduct.features[0]}</span>
+                      </div>
+                      <div className="flex items-center text-[#D6DEE3]">
+                        <div className="w-2 h-2 bg-[#F47C3C] rounded-full mr-3 shadow-sm"></div>
+                        <span>{currentProduct.features[1]}</span>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-center text-[#D6DEE3]">
+                        <div className="w-2 h-2 bg-[#F47C3C] rounded-full mr-3 shadow-sm"></div>
+                        <span>{currentProduct.features[2]}</span>
+                      </div>
+                      <div className="flex items-center text-[#D6DEE3]">
+                        <div className="w-2 h-2 bg-[#F47C3C] rounded-full mr-3 shadow-sm"></div>
+                        <span>{currentProduct.features[3]}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-2 text-sm">
+                  <div className="text-[#D6DEE3]">
+                    <span className="text-white font-semibold">Asistencia de la mercancía</span>
+                  </div>
+                  <div className="text-[#D6DEE3]">
+                    <span className="text-white font-semibold">Base Multisucursal:</span> {currentProduct.location} • 
+                    <span className="text-white font-semibold"> Pujado al día</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Indicadores del carrusel */}
+            <div className="flex justify-center py-4 space-x-2">
+              {products.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                    index === currentSlide ? 'bg-[#F47C3C] scale-125' : 'bg-white/30 hover:bg-white/50'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>          
         </div>
+        
 
         {/* Footer  */}
         <div className="bg-gradient-to-r from-[#9BAEBB] to-[#5C7C91] px-8 py-6">
