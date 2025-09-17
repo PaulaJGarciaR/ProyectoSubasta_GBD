@@ -1,7 +1,7 @@
 function LoginPage() {
   return (
     <div className="bg-[#1F3B4D] h-screen">
-      <div className="flex justify-center items-center pt-[12%]">
+      <div className="flex justify-center items-center h-screen">
         <div className=" w-[50%]">
           <div className="flex justify-center w-[100%]">
             <div className="w-[55%] bg-white rounded-l-2xl">
@@ -28,15 +28,27 @@ function LoginPage() {
                   </div>
                 </div>
                 <div className="flex justify-center mt-8">
-                    <a className="font-semibold text-[#F47C3C]" href="">¿Olvidaste tu contraseña?</a>
+                  <a className="font-semibold text-[#FF6F3C]" href="">
+                    ¿Olvidaste tu contraseña?
+                  </a>
                 </div>
-                
+
                 <div className="flex justify-center items-center m-8">
-                    <button className="bg-[#F47C3C] px-6 py-3 rounded-xl font-semibold text-white">Ingresar</button>
+                  <button className="bg-[#FF6F3C] px-6 py-3 rounded-xl font-semibold text-white hover:bg-[#F9A26C]">
+                    Ingresar
+                  </button>
                 </div>
               </form>
             </div>
-            <div className=" w-[45%] bg-[#F9A26C]">ñ</div>
+            <div className=" w-[45%] bg-[#FF6F3C] flex justify-center items-center">
+              <div className="block">
+                <h1 className="text-white font-bold text-sm">¿Aún no eres parte de Subasta.com?</h1>
+                <div className="flex justify-center mt-4">
+                  <button className="bg-transparent border-3 border-white px-6 py-2 rounded-xl text-white font-bold hover:bg-white hover:text-[#FF6F3C]">Registrate</button>
+                </div>
+                
+              </div>
+            </div>
           </div>
         </div>
       </div>
