@@ -3,12 +3,9 @@ export const validateSchema = (schema) => (req, res, next) => {
         schema.parse(req.body);
         next();
     } catch (error) {
-        return res.status(400).json({
-            error: "Validation failed",
-            fields: error.issues.map(issue => ({
-                field: issue.path.join('.'),
-                message: issue.message
-            }))
-        });
+        // Retorna un array de strings para que sea compatible con tu componente React
+        return res.status(400).json(
+            error.issues.map(issue => issue.message)
+        );
     }
 };
