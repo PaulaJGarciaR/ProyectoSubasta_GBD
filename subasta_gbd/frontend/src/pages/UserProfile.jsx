@@ -175,11 +175,11 @@ export default function UserProfile() {
   const isPersonaJuridica = formData.personType === 'juridica';
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="min-h-screen py-8 px-4">
       <div className="max-w-6xl mx-auto">
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div className="bg-[#171d26] rounded-lg shadow-md p-6 mb-6">
           <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold text-gray-800">Mi Perfil</h1>
+            <h1 className="text-3xl font-bold text-white">Mi Perfil</h1>
             {profile && !isEditing && (
               <button
                 onClick={() => setIsEditing(true)}
@@ -198,18 +198,18 @@ export default function UserProfile() {
           </div>
         )}
         {success && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4">
+          <div className="bg-[#171d26] border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4">
             {success}
           </div>
         )}
 
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-[#171d26] rounded-lg shadow-md p-6">
           {isEditing ? (
             <div className="space-y-6">
               {/* Tipo de Usuario y Persona */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4 border-b">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-white mb-2">
                     Tipo de Usuario
                   </label>
                   <select
@@ -318,13 +318,13 @@ export default function UserProfile() {
 
               {/* Documento de Identidad */}
               <div>
-                <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                <h2 className="text-xl font-semibold text-white mb-4 flex items-center">
                   <FileText className="w-5 h-5 mr-2" />
                   Documento de Identidad
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-white mb-2">
                       Tipo de Documento *
                     </label>
                     <select
@@ -416,7 +416,7 @@ export default function UserProfile() {
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#f7f9fb]  mb-2">
                       País *
                     </label>
                     <input
@@ -430,7 +430,7 @@ export default function UserProfile() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#f7f9fb]  mb-2">
                       Departamento/Estado *
                     </label>
                     <input
@@ -444,7 +444,7 @@ export default function UserProfile() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#f7f9fb]  mb-2">
                       Ciudad *
                     </label>
                     <input
@@ -607,30 +607,30 @@ export default function UserProfile() {
             <div className="space-y-6">
               {/* Vista de Información */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-1">Tipo de Usuario</p>
+                <div className="bg-[#202630] p-4 rounded-lg">
+                  <p className="text-sm text-[#f7f9fb] mb-1">Tipo de Usuario</p>
                   <p className="text-lg font-semibold capitalize">{profile.userType}</p>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-1">Tipo de Persona</p>
+                <div className="bg-[#202630] p-4 rounded-lg">
+                  <p className="text-sm text-[#f7f9fb] mb-1">Tipo de Persona</p>
                   <p className="text-lg font-semibold capitalize">{profile.personType}</p>
                 </div>
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                <h2 className="text-xl font-semibold text-white mb-4 flex items-center">
                   <User className="w-5 h-5 mr-2" />
                   Información Personal
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-gray-600">Nombre Completo</p>
+                    <p className="text-sm text-[#f7f9fb]">Nombre Completo</p>
                     <p className="text-lg font-medium">
                       {[profile.firstName, profile.middleName, profile.lastName, profile.secondLastName].filter(Boolean).join(' ')}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Fecha de Nacimiento</p>
+                    <p className="text-sm text-[#f7f9fb]">Fecha de Nacimiento</p>
                     <p className="text-lg font-medium flex items-center">
                       <Calendar className="w-4 h-4 mr-2" />
                       {new Date(profile.birthDate).toLocaleDateString('es-CO')}
@@ -640,41 +640,41 @@ export default function UserProfile() {
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                <h2 className="text-xl font-semibold text-white mb-4 flex items-center">
                   <FileText className="w-5 h-5 mr-2" />
                   Documento de Identidad
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <p className="text-sm text-gray-600">Tipo</p>
+                    <p className="text-sm text-[#f7f9fb]">Tipo</p>
                     <p className="text-lg font-medium">{profile.documentType}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Número</p>
+                    <p className="text-sm text-[#f7f9fb]">Número</p>
                     <p className="text-lg font-medium">{profile.documentNumber}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Fecha de Expedición</p>
+                    <p className="text-sm text-[#f7f9fb]">Fecha de Expedición</p>
                     <p className="text-lg font-medium">{new Date(profile.documentIssueDate).toLocaleDateString('es-CO')}</p>
                   </div>
                 </div>
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                <h2 className="text-xl font-semibold text-white mb-4 flex items-center">
                   <Phone className="w-5 h-5 mr-2" />
                   Contacto
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-gray-600">Email</p>
+                    <p className="text-sm text-[#f7f9fb]">Email</p>
                     <p className="text-lg font-medium flex items-center">
                       <Mail className="w-4 h-4 mr-2" />
                       {profile.email}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Teléfono</p>
+                    <p className="text-sm text-[#f7f9fb]">Teléfono</p>
                     <p className="text-lg font-medium flex items-center">
                       <Phone className="w-4 h-4 mr-2" />
                       {profile.phone}
@@ -684,11 +684,11 @@ export default function UserProfile() {
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                <h2 className="text-xl font-semibold text-white mb-4 flex items-center">
                   <MapPin className="w-5 h-5 mr-2" />
                   Ubicación
                 </h2>
-                <div className="text-gray-700">
+                <div className="text-[#f7f9fb]">
                   <p>{profile.address}</p>
                   <p>{profile.city}, {profile.state}</p>
                   <p>{profile.country}</p>
@@ -697,46 +697,46 @@ export default function UserProfile() {
 
               {profile.personType === 'natural' && profile.nitPersonaNatural && (
                 <div className="bg-blue-50 p-4 rounded-lg">
-                  <h2 className="text-xl font-semibold text-gray-800 mb-2">Persona Natural</h2>
+                  <h2 className="text-xl font-semibold text-white mb-2">Persona Natural</h2>
                   <p className="text-sm text-gray-600">NIT</p>
                   <p className="text-lg font-medium">{profile.nitPersonaNatural}</p>
                 </div>
               )}
 
               {profile.personType === 'juridica' && (
-                <div className="bg-green-50 p-4 rounded-lg">
-                  <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                <div className="bg-[#202630] p-4 rounded-lg">
+                  <h2 className="text-xl font-semibold text-white mb-4 flex items-center">
                     <Building className="w-5 h-5 mr-2" />
                     Persona Jurídica
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {profile.razonSocial && (
                       <div>
-                        <p className="text-sm text-gray-600">Razón Social</p>
+                        <p className="text-sm text-[#f7f9fb]">Razón Social</p>
                         <p className="text-lg font-medium">{profile.razonSocial}</p>
                       </div>
                     )}
                     {profile.sociedad && (
                       <div>
-                        <p className="text-sm text-gray-600">Tipo de Sociedad</p>
+                        <p className="text-sm text-[#f7f9fb]">Tipo de Sociedad</p>
                         <p className="text-lg font-medium">{profile.sociedad}</p>
                       </div>
                     )}
                     {profile.nitPersonaJuridica && (
                       <div>
-                        <p className="text-sm text-gray-600">NIT</p>
+                        <p className="text-sm text-[#f7f9fb]">NIT</p>
                         <p className="text-lg font-medium">{profile.nitPersonaJuridica}</p>
                       </div>
                     )}
                     {profile.matriculaMercantil && (
                       <div>
-                        <p className="text-sm text-gray-600">Matrícula Mercantil</p>
+                        <p className="text-sm text-[#f7f9fb]">Matrícula Mercantil</p>
                         <p className="text-lg font-medium">{profile.matriculaMercantil}</p>
                       </div>
                     )}
                     {profile.fechaDeConstitucion && (
                       <div>
-                        <p className="text-sm text-gray-600">Fecha de Constitución</p>
+                        <p className="text-sm text-[#f7f9fb]">Fecha de Constitución</p>
                         <p className="text-lg font-medium">
                           {new Date(profile.fechaDeConstitucion).toLocaleDateString('es-CO')}
                         </p>

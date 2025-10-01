@@ -43,42 +43,20 @@ export default function DashboardVendedor() {
   };
 
   return (
-    <div className="flex h-screen bg-slate-900 text-white">
-        <div className="flex justify-around">
-            DashboardPage
-            <div className="">
-              <button
-                onClick={() => logout()}
-                className="cursor-pointer  px-4 py-2 bg-red-400"
-              >
-                Logout
-              </button>
-            </div>
-          </div>
+    <div className="flex h-screen bg-[#13171f] text-white">
       {/* Sidebar */}
       <aside
         className={`${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } fixed inset-y-0 left-0 z-50 w-64 bg-slate-800 transition-transform duration-300 lg:translate-x-0 lg:static lg:inset-0`}
+        } fixed inset-y-0 left-0 z-50 w-64 bg-[#171d26] transition-transform duration-300 lg:translate-x-0 lg:static lg:inset-0`}
       >
         <div className="flex items-center justify-between p-6 border-b border-slate-700">
-          {/* <div className="flex justify-around">
-            DashboardPage
-            <div className="">
-              <button
-                onClick={() => logout()}
-                className="cursor-pointer  px-4 py-2 bg-red-400"
-              >
-                Logout
-              </button>
-            </div>
-          </div> */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-[#fa7942] rounded-lg flex items-center justify-center">
               <Gavel className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-orange-500">
+              <h1 className="text-xl font-bold text-[#fa7942]">
                 SubastasNaPa
               </h1>
               <p className="text-xs text-slate-400">
@@ -95,7 +73,7 @@ export default function DashboardVendedor() {
           <button
             onClick={() => handleNavigation("inicio")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-              currentPage === "inicio" ? "bg-orange-500" : "hover:bg-slate-700"
+              currentPage === "inicio" ? "bg-[#fa7942]" : "hover:bg-slate-700"
             }`}
           >
             <Home className="w-5 h-5" />
@@ -106,7 +84,7 @@ export default function DashboardVendedor() {
             onClick={() => handleNavigation("productos")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
               currentPage === "productos"
-                ? "bg-orange-500"
+                ? "bg-[#fa7942]"
                 : "hover:bg-slate-700"
             }`}
           >
@@ -117,7 +95,7 @@ export default function DashboardVendedor() {
           <button
             onClick={() => handleNavigation("pujas")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-              currentPage === "pujas" ? "bg-orange-500" : "hover:bg-slate-700"
+              currentPage === "pujas" ? "bg-[#fa7942]" : "hover:bg-slate-700"
             }`}
           >
             <Clock className="w-5 h-5" />
@@ -127,7 +105,7 @@ export default function DashboardVendedor() {
           <button
             onClick={() => handleNavigation("ganadas")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-              currentPage === "ganadas" ? "bg-orange-500" : "hover:bg-slate-700"
+              currentPage === "ganadas" ? "bg-[#fa7942]" : "hover:bg-slate-700"
             }`}
           >
             <Trophy className="w-5 h-5" />
@@ -137,12 +115,13 @@ export default function DashboardVendedor() {
           <button
             onClick={() => handleNavigation("perfil")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-              currentPage === "perfil" ? "bg-orange-500" : "hover:bg-slate-700"
+              currentPage === "perfil" ? "bg-[#fa7942]" : "hover:bg-slate-700"
             }`}
           >
             <User className="w-5 h-5" />
             <span>Mi Perfil</span>
           </button>
+
         </nav>
       </aside>
 
@@ -157,7 +136,7 @@ export default function DashboardVendedor() {
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto">
         {/* Header */}
-        <header className="bg-slate-800 border-b border-slate-700 p-4">
+        <header className="bg-[#171d26] border-b border-slate-700 p-4">
           <div className="flex items-center justify-between">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -180,10 +159,10 @@ export default function DashboardVendedor() {
             <div className="flex items-center gap-4">
               <button className="relative p-2 hover:bg-slate-700 rounded-lg">
                 <Bell className="w-6 h-6" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-orange-500 rounded-full"></span>
+                <span className="absolute top-1 right-1 w-2 h-2 bg-ora[#ff9365] rounded-full"></span>
               </button>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-ora[#ff9365] rounded-full flex items-center justify-center">
                   <User className="w-6 h-6" />
                 </div>
                 <div className="hidden md:block">
@@ -192,6 +171,12 @@ export default function DashboardVendedor() {
                     pjgarciar1@ufpso.edu.co
                   </p>
                 </div>
+                <div><button
+                    onClick={() => logout()}
+                    className="cursor-pointer  px-4 py-2 bg-[#fa7942] rounded-lg hover:bg-[#ff9365] "
+                  >
+                    Logout
+                  </button></div>
               </div>
             </div>
           </div>
@@ -215,7 +200,7 @@ function InicioContent() {
             <h3 className="text-slate-400 text-sm font-medium">
               Subastas Activas
             </h3>
-            <Gavel className="w-5 h-5 text-orange-500" />
+            <Gavel className="w-5 h-5 text-[#ff9365]" />
           </div>
           <p className="text-3xl font-bold">24</p>
           <p className="text-xs text-green-400 mt-2">↑ 12% vs mes anterior</p>
@@ -224,7 +209,7 @@ function InicioContent() {
         <div className="bg-slate-800 rounded-lg p-6 border border-slate-700">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-slate-400 text-sm font-medium">Mis Pujas</h3>
-            <Clock className="w-5 h-5 text-orange-500" />
+            <Clock className="w-5 h-5 text-[#fa7942]" />
           </div>
           <p className="text-3xl font-bold">8</p>
           <p className="text-xs text-slate-400 mt-2">En progreso</p>
@@ -233,7 +218,7 @@ function InicioContent() {
         <div className="bg-slate-800 rounded-lg p-6 border border-slate-700">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-slate-400 text-sm font-medium">Ganadas</h3>
-            <Trophy className="w-5 h-5 text-orange-500" />
+            <Trophy className="w-5 h-5 text-[#fa7942]" />
           </div>
           <p className="text-3xl font-bold">3</p>
           <p className="text-xs text-yellow-400 mt-2">Este mes</p>
@@ -244,7 +229,7 @@ function InicioContent() {
             <h3 className="text-slate-400 text-sm font-medium">
               Total Invertido
             </h3>
-            <span className="text-orange-500 text-xl">$</span>
+            <span className="text-[#fa7942] text-xl">$</span>
           </div>
           <p className="text-3xl font-bold">$2,450</p>
           <p className="text-xs text-slate-400 mt-2">USD</p>
@@ -254,14 +239,14 @@ function InicioContent() {
       {/* Subastas Destacadas */}
       <div className="bg-slate-800 rounded-lg border border-slate-700 p-6 mb-6">
         <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-          <Gavel className="w-6 h-6 text-orange-500" />
+          <Gavel className="w-6 h-6 text-[#fa7942]" />
           Subastas Destacadas
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[1, 2, 3].map((item) => (
             <div
               key={item}
-              className="bg-slate-700 rounded-lg overflow-hidden hover:ring-2 hover:ring-orange-500 transition-all cursor-pointer"
+              className="bg-slate-700 rounded-lg overflow-hidden hover:ring-2 hover:ring-[#fa7942] transition-all cursor-pointer"
             >
               <div className="h-48 bg-slate-600 flex items-center justify-center">
                 <Gavel className="w-12 h-12 text-slate-500" />
@@ -276,14 +261,14 @@ function InicioContent() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs text-slate-400">Puja Actual</p>
-                    <p className="text-lg font-bold text-orange-500">$500</p>
+                    <p className="text-lg font-bold text-[#fa7942]">$500</p>
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-slate-400">Termina en</p>
                     <p className="text-sm font-semibold">2h 34m</p>
                   </div>
                 </div>
-                <button className="w-full mt-4 bg-orange-500 hover:bg-orange-600 py-2 rounded-lg font-medium transition-colors">
+                <button className="w-full mt-4 bg-[#fa7942] hover:bg-[#ff9365] py-2 rounded-lg font-medium transition-colors">
                   Pujar Ahora
                 </button>
               </div>
@@ -303,14 +288,14 @@ function InicioContent() {
             >
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-slate-600 rounded-lg flex items-center justify-center">
-                  <Gavel className="w-6 h-6 text-orange-500" />
+                  <Gavel className="w-6 h-6 text-[#fa7942]" />
                 </div>
                 <div>
                   <p className="font-medium">Nueva puja en "Artículo {item}"</p>
                   <p className="text-sm text-slate-400">Hace {item} hora(s)</p>
                 </div>
               </div>
-              <span className="text-orange-500 font-semibold">$450</span>
+              <span className="text-[#fa7942] font-semibold">$450</span>
             </div>
           ))}
         </div>
@@ -324,7 +309,7 @@ function PujasContent() {
   return (
     <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
       <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-        <Clock className="w-7 h-7 text-orange-500" />
+        <Clock className="w-7 h-7 text-[#fa7942]" />
         Mis Pujas Activas
       </h2>
       <div className="space-y-4">
@@ -335,7 +320,7 @@ function PujasContent() {
           >
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 bg-slate-600 rounded-lg flex items-center justify-center">
-                <Gavel className="w-8 h-8 text-orange-500" />
+                <Gavel className="w-8 h-8 text-[#fa7942]" />
               </div>
               <div>
                 <p className="font-semibold text-lg">
@@ -343,7 +328,7 @@ function PujasContent() {
                 </p>
                 <p className="text-sm text-slate-400">
                   Tu puja:{" "}
-                  <span className="text-orange-500 font-semibold">
+                  <span className="text-[#fa7942] font-semibold">
                     ${300 + item * 100}
                   </span>
                 </p>
@@ -370,7 +355,7 @@ function GanadasContent() {
   return (
     <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
       <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-        <Trophy className="w-7 h-7 text-orange-500" />
+        <Trophy className="w-7 h-7 text-[#fa7942]" />
         Subastas Ganadas
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -391,7 +376,7 @@ function GanadasContent() {
                     ${800 + item * 200}
                   </p>
                 </div>
-                <button className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-lg font-medium text-sm transition-colors">
+                <button className="bg-[#fa7942] hover:bg-[#ff9365] px-4 py-2 rounded-lg font-medium text-sm transition-colors">
                   Detalles
                 </button>
               </div>
