@@ -165,17 +165,42 @@ export const logout = (req, res) => {
 };
 
 export const profile = async (req, res) => {
-  const userFound = await User.findById(req.user.id);
+  try {
+    const userFound = await User.findById(req.user.id);
+    if (!userFound) return res.status(400).json({ message: "User not found" });
 
-  if (!userFound) return res.status(400).json({ message: "User not found" });
-
-  return res.json({
-    id: userFound._id,
-    email: userFound.email,
-    createdA: userFound.createdAt,
-    updatedA: userFound.updatedAt,
-  });
+    return res.json({
+      id: userFound._id,
+      userType: userFound.userType,
+      firstName: userFound.firstName,
+      middleName: userFound.middleName,
+      lastName: userFound.lastName,
+      secondLastName: userFound.secondLastName,
+      documentType: userFound.documentType,
+      documentNumber: userFound.documentNumber,
+      documentIssueDate: userFound.documentIssueDate,
+      country: userFound.country,
+      state: userFound.state,
+      city: userFound.city,
+      address: userFound.address,
+      email: userFound.email,
+      phone: userFound.phone,
+      birthDate: userFound.birthDate,
+      personType: userFound.personType,
+      nitPersonaNatural: userFound.nitPersonaNatural,
+      razonSocial: userFound.razonSocial,
+      sociedad: userFound.sociedad,
+      nitPersonaJuridica: userFound.nitPersonaJuridica,
+      matriculaMercantil: userFound.matriculaMercantil,
+      fechaDeConstitucion: userFound.fechaDeConstitucion,
+      createdAt: userFound.createdAt,
+      updatedAt: userFound.updatedAt,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 };
+
 
 export const verifyToken = async (req, res) => {
   const { token } = req.cookies;

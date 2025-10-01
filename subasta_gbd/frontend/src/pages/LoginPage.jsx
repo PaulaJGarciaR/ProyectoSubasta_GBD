@@ -26,7 +26,7 @@ function LoginPage() {
   };
 
   useEffect(()=> {
-    if(isAuthenticated) navigate("/dashboard")
+    if(isAuthenticated) navigate("/dashboardvendedor")
       // eslint-disable-next-line react-hooks/exhaustive-deps
   },[isAuthenticated]);
 
@@ -93,7 +93,7 @@ function LoginPage() {
 
         {/* Área de contenido */}
         <div className="relative flex justify-center items-center h-screen">
-          <div className=" w-[65%]">
+          <div className=" w-[50%]">
             <div className="flex justify-center w-[100%]">
               <div className="w-[50%] bg-[#171d26] rounded-l-lg ">
                 <div className="mt-8">

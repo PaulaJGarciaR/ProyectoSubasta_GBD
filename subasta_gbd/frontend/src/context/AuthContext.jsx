@@ -19,6 +19,17 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors,setErrors] = useState([])
   const [loading,setloading] = useState(true);
+
+   useEffect(() => {
+    if (errors.length > 0) {
+      const timer = setTimeout(() => {
+        setErrors([]);
+      }, 5000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [errors]);
+
   
   const signup = async (user) => {
     try {
