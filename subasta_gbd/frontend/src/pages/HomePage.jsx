@@ -231,7 +231,7 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0a1628]">
+    <div className="min-h-screen bg-[#0F1F29]">
       {/* Header */}
       <header className="bg-[#1a2332] border-b border-gray-800">
         <div className="container mx-auto px-4 py-4">
@@ -434,14 +434,14 @@ const HomePage = () => {
                 placeholder="Buscar productos..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-[#0f1a2e] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition-colors"
+                className="w-full pl-10 pr-4 py-3 bg-[#0f1a2e] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#FF6F3C] transition-colors"
               />
             </div>
 
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-3 bg-[#0f1a2e] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-cyan-400 transition-colors"
+              className="px-4 py-3 bg-[#0f1a2e] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#FF6F3C] transition-colors"
             >
               <option value="all">Todas las categorías</option>
               <option value="autos">Autos</option>
@@ -453,7 +453,7 @@ const HomePage = () => {
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="px-4 py-3 bg-[#0f1a2e] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-cyan-400 transition-colors"
+              className="px-4 py-3 bg-[#0f1a2e] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#FF6F3C] transition-colors"
             >
               <option value="all">Todos</option>
               <option value="Activa">Activa</option>
@@ -470,7 +470,7 @@ const HomePage = () => {
           <div className="flex items-center justify-between mb-8">
             <h3 className="text-3xl font-bold text-white">
               Subastas Disponibles{" "}
-              <span className="text-cyan-400">({filteredProducts.length})</span>
+              <span className="text-[#FF6F3C]">({filteredProducts.length})</span>
             </h3>
           </div>
 
