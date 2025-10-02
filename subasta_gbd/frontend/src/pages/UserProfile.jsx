@@ -105,12 +105,13 @@ export default function UserProfile() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/profile', {
+      const response = await fetch('http://localhost:4000/api/profile', {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify(formData)
       });
 
@@ -183,7 +184,7 @@ export default function UserProfile() {
             {profile && !isEditing && (
               <button
                 onClick={() => setIsEditing(true)}
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                className="inline-flex items-center px-4 py-2 bg-[#fa7942] text-white rounded-lg cursor-pointer transition"
               >
                 <Edit2 className="w-4 h-4 mr-2" />
                 Editar
@@ -206,50 +207,15 @@ export default function UserProfile() {
         <div className="bg-[#171d26] rounded-lg shadow-md p-6">
           {isEditing ? (
             <div className="space-y-6">
-              {/* Tipo de Usuario y Persona */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4 border-b">
-                <div>
-                  <label className="block text-sm font-medium text-white mb-2">
-                    Tipo de Usuario
-                  </label>
-                  <select
-                    name="userType"
-                    value={formData.userType}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="">Seleccionar...</option>
-                    <option value="cliente">Cliente</option>
-                    <option value="proveedor">Proveedor</option>
-                    <option value="empleado">Empleado</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Tipo de Persona
-                  </label>
-                  <select
-                    name="personType"
-                    value={formData.personType}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="">Seleccionar...</option>
-                    <option value="natural">Persona Natural</option>
-                    <option value="juridica">Persona Jurídica</option>
-                  </select>
-                </div>
-              </div>
-
               {/* Información Personal */}
               <div>
-                <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                <h2 className="text-xl font-semibold text-[#f7f9fb] mb-4 flex items-center">
                   <User className="w-5 h-5 mr-2" />
                   Información Personal
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium #f7f9fb mb-2">
                       Primer Nombre *
                     </label>
                     <input
@@ -263,7 +229,7 @@ export default function UserProfile() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#f7f9fb] mb-2">
                       Segundo Nombre
                     </label>
                     <input
@@ -275,7 +241,7 @@ export default function UserProfile() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#f7f9fb] mb-2">
                       Primer Apellido *
                     </label>
                     <input
@@ -289,7 +255,7 @@ export default function UserProfile() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#f7f9fb] mb-2">
                       Segundo Apellido
                     </label>
                     <input
@@ -301,7 +267,7 @@ export default function UserProfile() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#f7f9fb] mb-2">
                       Fecha de Nacimiento *
                     </label>
                     <input
@@ -342,7 +308,7 @@ export default function UserProfile() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#f7f9fb] mb-2">
                       Número de Documento *
                     </label>
                     <input
@@ -356,7 +322,7 @@ export default function UserProfile() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#f7f9fb] mb-2">
                       Fecha de Expedición *
                     </label>
                     <input
@@ -373,13 +339,13 @@ export default function UserProfile() {
 
               {/* Contacto */}
               <div>
-                <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                <h2 className="text-xl font-semibold text-[#f7f9fb] mb-4 flex items-center">
                   <Phone className="w-5 h-5 mr-2" />
                   Información de Contacto
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#f7f9fb] mb-2">
                       Correo Electrónico *
                     </label>
                     <input
@@ -392,7 +358,7 @@ export default function UserProfile() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#f7f9fb] mb-2">
                       Teléfono *
                     </label>
                     <input
@@ -410,7 +376,7 @@ export default function UserProfile() {
 
               {/* Ubicación */}
               <div>
-                <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                <h2 className="text-xl font-semibold text-[#f7f9fb] mb-4 flex items-center">
                   <MapPin className="w-5 h-5 mr-2" />
                   Ubicación
                 </h2>
@@ -458,7 +424,7 @@ export default function UserProfile() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#f7f9fb] mb-2">
                       Dirección *
                     </label>
                     <input
@@ -476,12 +442,12 @@ export default function UserProfile() {
 
               {/* Persona Natural */}
               {isPersonaNatural && (
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                <div className="bg-[#171d26] p-4 rounded-lg">
+                  <h2 className="text-xl font-semibold text-[#f7f9fb] mb-4">
                     Información Persona Natural
                   </h2>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#f7f9fb] mb-2">
                       NIT Persona Natural
                     </label>
                     <input
@@ -498,14 +464,14 @@ export default function UserProfile() {
 
               {/* Persona Jurídica */}
               {isPersonaJuridica && (
-                <div className="bg-green-50 p-4 rounded-lg">
-                  <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                <div className="bg-[#171d26] p-4 rounded-lg">
+                  <h2 className="text-xl font-semibold text-[#f7f9fb] mb-4 flex items-center">
                     <Building className="w-5 h-5 mr-2" />
                     Información Persona Jurídica
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-[#f7f9fb] mb-2">
                         Razón Social
                       </label>
                       <input
@@ -518,7 +484,7 @@ export default function UserProfile() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-[#f7f9fb] mb-2">
                         Tipo de Sociedad
                       </label>
                       <select
@@ -535,7 +501,7 @@ export default function UserProfile() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-[#f7f9fb] mb-2">
                         NIT Persona Jurídica
                       </label>
                       <input
@@ -548,7 +514,7 @@ export default function UserProfile() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-[#f7f9fb] mb-2">
                         Matrícula Mercantil
                       </label>
                       <input
@@ -560,7 +526,7 @@ export default function UserProfile() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-[#f7f9fb] mb-2">
                         Fecha de Constitución
                       </label>
                       <input
@@ -580,7 +546,7 @@ export default function UserProfile() {
                 <button
                   onClick={handleSubmit}
                   disabled={saving}
-                  className="flex-1 inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400"
+                  className="flex-1 inline-flex items-center justify-center px-6 py-3 bg-[#fa7942] text-white rounded-lg transition cursor-pointer disabled:bg-gray-400"
                 >
                   {saving ? (
                     <>

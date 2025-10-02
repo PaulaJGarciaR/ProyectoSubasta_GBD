@@ -386,7 +386,7 @@ function RegisterPage() {
         `}</style>
 
         <div className="relative flex justify-center items-center min-h-screen">
-          <div className="w-[60%]">
+          <div className="w-[80%]">
             <div className="flex justify-center w-[100%]">
               <div className="w-[80%] rounded-lg bg-[#171d26]">
                 <div>

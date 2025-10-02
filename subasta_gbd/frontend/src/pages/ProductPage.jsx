@@ -1,143 +1,176 @@
-import React, { useState } from 'react';
-import { Gavel, Search, Clock } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { useProducts } from '../context/ProductContext';
+import { Eye, Trash2, Edit, Clock, DollarSign, Calendar } from 'lucide-react';
+import { Link } from 'react-router-dom';function ProductPage() {
+  const { getProducts, products } = useProducts();
 
-export default function ProductosPage() {
-  const [filtro, setFiltro] = useState('todos');
-  const [busqueda, setBusqueda] = useState('');
+  const {deleteProduct} = useProducts()
+  
 
-  const productos = [
-    { id: 1, nombre: 'Laptop Gaming', categoria: 'electronica', precio: 850, pujas: 23, tiempo: '3h 45m', estado: 'activo' },
-    { id: 2, nombre: 'Reloj Vintage', categoria: 'accesorios', precio: 320, pujas: 15, tiempo: '1h 20m', estado: 'activo' },
-    { id: 3, nombre: 'Cámara DSLR', categoria: 'electronica', precio: 1200, pujas: 45, tiempo: '5h 10m', estado: 'activo' },
-    { id: 4, nombre: 'Pintura al Óleo', categoria: 'arte', precio: 2500, pujas: 8, tiempo: '12h 30m', estado: 'activo' },
-    { id: 5, nombre: 'Zapatillas Deportivas', categoria: 'moda', precio: 180, pujas: 31, tiempo: '2h 15m', estado: 'activo' },
-    { id: 6, nombre: 'Guitarra Eléctrica', categoria: 'instrumentos', precio: 650, pujas: 19, tiempo: '6h 40m', estado: 'activo' },
-    { id: 7, nombre: 'Tablet Pro', categoria: 'electronica', precio: 450, pujas: 27, tiempo: '4h 05m', estado: 'activo' },
-    { id: 8, nombre: 'Bolso de Cuero', categoria: 'accesorios', precio: 220, pujas: 12, tiempo: '8h 25m', estado: 'activo' },
-  ];
+  useEffect(() => {
+    getProducts();
+  }, [getProducts]);
 
-  const productosFiltrados = productos.filter(p => {
-    const matchCategoria = filtro === 'todos' || p.categoria === filtro;
-    const matchBusqueda = p.nombre.toLowerCase().includes(busqueda.toLowerCase());
-    return matchCategoria && matchBusqueda;
-  });
 
-  const categorias = [
-    { id: 'todos', nombre: 'Todos' },
-    { id: 'electronica', nombre: 'Electrónica' },
-    { id: 'moda', nombre: 'Moda' },
-    { id: 'arte', nombre: 'Arte' },
-    { id: 'accesorios', nombre: 'Accesorios' },
-    { id: 'instrumentos', nombre: 'Instrumentos' }
-  ];
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
 
-  return (
-    <div>
-      {/* Header con filtros */}
-      <div className="bg-red-800 rounded-lg border border-slate-700 p-6 mb-6">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-              <Gavel className="w-7 h-7 text-orange-500" />
-              Catálogo de Productos
-            </h2>
-            <p className="text-slate-400 text-sm">Explora y participa en nuestras subastas activas</p>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Buscar producto..."
-                value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 w-64"
-              />
+  const getTimeRemaining = (dateEnd) => {
+    const now = new Date();
+    const end = new Date(dateEnd);
+    const diff = end - now;
+    
+    if (diff <= 0) return 'Finalizada';
+    
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    
+    if (hours > 24) {
+      const days = Math.floor(hours / 24);
+      return `${days}d ${hours % 24}h`;
+    }
+    return `${hours}h ${minutes}m`;
+  };
+
+  if (products.length === 0) {
+    return (
+      <div className="bg-[#13171f] min-h-screen p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-[#171d26] rounded-lg border border-[#242a37] p-12 text-center">
+            <div className="bg-[#ff9365] p-4 w-16 h-16 rounded-lg mx-auto mb-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-full h-full"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z"
+                />
+              </svg>
             </div>
+            <h3 className="text-2xl font-bold text-[#f7f9fb] mb-2">No hay subastas disponibles</h3>
+             <div className='flex justify-center'>
+               <p className="text-[#D6DEE3]">Crea tu primera subasta para comenzar</p>
+          <Link to='/add-product' className='bg-[#fa7942] px-2 ml-3 rounded-lg font-semibold'>+</Link>
+        </div>
           </div>
         </div>
+      </div>
+    );
+  }
 
-        {/* Filtros de categoría */}
-        <div className="flex flex-wrap gap-2 mt-6">
-          {categorias.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setFiltro(cat.id)}
-              className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
-                filtro === cat.id ? 'bg-orange-500 text-white' : 'bg-slate-700 hover:bg-slate-600'
-              }`}
+  return (
+    <div className="bg-[#13171f] min-h-screen p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className='flex items-center justify-between'>
+          <div className="mb-8">
+          <h1 className="text-3xl font-bold text-[#f7f9fb] mb-2">Mis Productos</h1>
+          <p className="text-[#D6DEE3]">Gestiona tus productos en subasta</p>
+        </div>
+
+        <div className=''>
+          <Link to='/add-product' className='bg-[#fa7942] rounded-lg cursor-pointer p-4 text-2xl font-semibold'>+</Link>
+        </div>
+
+        </div>
+        
+
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {products.map((product) => (
+            <div
+              key={product._id}
+              className="bg-[#171d26] rounded-lg overflow-hidden border border-[#242a37] hover:border-[#fa7942] transition-all group"
             >
-              {cat.nombre}
-            </button>
+              <div className="relative h-48 overflow-hidden bg-[#242a37]">
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  onError={(e) => {
+                    e.target.src = 'https://via.placeholder.com/400x300?text=Sin+Imagen';
+                  }}
+                />
+                <div className="absolute top-3 right-3 bg-[#fa7942] px-3 py-1 rounded-full">
+                  <span className="text-xs font-semibold text-[#13171f] flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    {getTimeRemaining(product.dateEnd)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-5">
+                <h3 className="font-bold text-xl mb-2 text-[#f7f9fb] group-hover:text-[#fa7942] transition-colors line-clamp-1">
+                  {product.title}
+                </h3>
+
+                <p className="text-sm text-[#D6DEE3] mb-4 line-clamp-2 min-h-[40px]">
+                  {product.description}
+                </p>
+
+                <div className="space-y-3 mb-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-[#9BAEBB] flex items-center gap-1">
+                      <DollarSign className="w-4 h-4" />
+                      Precio Inicial
+                    </span>
+                    <span className="text-lg font-bold text-[#fa7942]">
+                      ${product.startingPrice.toFixed(2)}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs text-[#9BAEBB]">
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />
+                      Inicio
+                    </span>
+                    <span>{formatDate(product.dateStart)}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs text-[#9BAEBB]">
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />
+                      Finaliza
+                    </span>
+                    <span>{formatDate(product.dateEnd)}</span>
+                  </div>
+                </div>
+
+                <div className="border-t border-[#242a37] pt-4 flex gap-4 justify-center">
+                  <div className=' flex justify-evenly w-[80%]'>
+                    <Link className='bg-[#13171f] w-[60%] text-center font-semibold text-lg px-6 rounded-lg items-center cursor-pointer' to={`/dashboardvendedor/${product._id}`}>Editar</Link>
+                 
+                  <button
+                    onClick={() => {deleteProduct(product._id)}}
+                    className="bg-red-600 hover:bg-red-700 text-white text-lg font-semibold py-2 px-3 rounded-lg transition-colors flex items-center justify-center"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                  </div>
+                    
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       </div>
-
-      {/* Productos encontrados */}
-      <div className="mb-4 text-slate-400 text-sm">
-        Mostrando {productosFiltrados.length} de {productos.length} productos
-      </div>
-
-      {/* Grid de productos */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {productosFiltrados.map((producto) => (
-          <div key={producto.id} className="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 hover:border-orange-500 transition-all cursor-pointer group">
-            <div className="relative h-48 bg-gradient-to-br from-slate-700 to-slate-600 flex items-center justify-center overflow-hidden">
-              <Gavel className="w-16 h-16 text-slate-500 group-hover:scale-110 transition-transform" />
-              <div className="absolute top-3 right-3 bg-orange-500 px-3 py-1 rounded-full text-xs font-semibold">
-                {producto.pujas} pujas
-              </div>
-            </div>
-            
-            <div className="p-4">
-              <div className="mb-2">
-                <span className="text-xs text-orange-400 font-medium uppercase">{producto.categoria}</span>
-              </div>
-              
-              <h3 className="font-semibold text-lg mb-2 group-hover:text-orange-400 transition-colors">
-                {producto.nombre}
-              </h3>
-              
-              <p className="text-sm text-slate-400 mb-4">
-                Subasta activa con múltiples participantes
-              </p>
-              
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <p className="text-xs text-slate-400">Puja Actual</p>
-                  <p className="text-xl font-bold text-orange-500">${producto.precio}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-xs text-slate-400">Termina en</p>
-                  <p className="text-sm font-semibold flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
-                    {producto.tiempo}
-                  </p>
-                </div>
-              </div>
-              
-              <div className="flex gap-2">
-                <button className="flex-1 bg-orange-500 hover:bg-orange-600 py-2 rounded-lg font-medium text-sm transition-colors">
-                  Pujar
-                </button>
-                <button className="px-4 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors">
-                  <Search className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Mensaje si no hay resultados */}
-      {productosFiltrados.length === 0 && (
-        <div className="bg-slate-800 rounded-lg border border-slate-700 p-12 text-center">
-          <Gavel className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold mb-2">No se encontraron productos</h3>
-          <p className="text-slate-400">Intenta con otros filtros o términos de búsqueda</p>
-        </div>
-      )}
     </div>
   );
 }
+
+
+
+
+export default ProductPage;
