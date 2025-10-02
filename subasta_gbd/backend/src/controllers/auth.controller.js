@@ -149,6 +149,7 @@ export const login = async (req, res) => {
     res.json({
       id: userFound._id,
       email: userFound.email,
+       userType: userFound.userType,
       createdA: userFound.createdAt,
       updatedA: userFound.updatedAt,
     });
@@ -201,6 +202,119 @@ export const profile = async (req, res) => {
   }
 };
 
+// Agregar esta función en tu archivo auth.controller.js
+
+export const updateProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const profileData = req.body;
+
+    // Limpiar campos vacíos para evitar errores de validación
+    Object.keys(profileData).forEach(key => {
+      if (profileData[key] === '' || profileData[key] === null || profileData[key] === undefined) {
+        delete profileData[key];
+      }
+    });
+
+    // Validar que no se intente cambiar el email a uno existente
+    if (profileData.email) {
+      const emailExists = await User.findOne({ 
+        email: profileData.email,
+        _id: { $ne: userId }
+      });
+      if (emailExists) {
+        return res.status(400).json({ message: "El email ya está en uso" });
+      }
+    }
+
+    // Validar documento único
+    if (profileData.documentNumber) {
+      const docExists = await User.findOne({ 
+        documentNumber: profileData.documentNumber,
+        _id: { $ne: userId }
+      });
+      if (docExists) {
+        return res.status(400).json({ message: "El número de documento ya está registrado" });
+      }
+    }
+
+    // Validar NITs únicos solo si tienen valor
+    if (profileData.nitPersonaNatural) {
+      const nitExists = await User.findOne({ 
+        nitPersonaNatural: profileData.nitPersonaNatural,
+        _id: { $ne: userId }
+      });
+      if (nitExists) {
+        return res.status(400).json({ message: "Este NIT ya está registrado" });
+      }
+    }
+
+    if (profileData.nitPersonaJuridica) {
+      const nitExists = await User.findOne({ 
+        nitPersonaJuridica: profileData.nitPersonaJuridica,
+        _id: { $ne: userId }
+      });
+      if (nitExists) {
+        return res.status(400).json({ message: "Este NIT ya está registrado" });
+      }
+    }
+
+    if (profileData.matriculaMercantil) {
+      const matExists = await User.findOne({ 
+        matriculaMercantil: profileData.matriculaMercantil,
+        _id: { $ne: userId }
+      });
+      if (matExists) {
+        return res.status(400).json({ message: "Esta matrícula mercantil ya está registrada" });
+      }
+    }
+
+    // No permitir actualizar la contraseña desde este endpoint
+    delete profileData.password;
+
+    // Actualizar el usuario (sin runValidators para campos opcionales)
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      profileData,
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    return res.json({
+      id: updatedUser._id,
+      userType: updatedUser.userType,
+      firstName: updatedUser.firstName,
+      middleName: updatedUser.middleName,
+      lastName: updatedUser.lastName,
+      secondLastName: updatedUser.secondLastName,
+      documentType: updatedUser.documentType,
+      documentNumber: updatedUser.documentNumber,
+      documentIssueDate: updatedUser.documentIssueDate,
+      country: updatedUser.country,
+      state: updatedUser.state,
+      city: updatedUser.city,
+      address: updatedUser.address,
+      email: updatedUser.email,
+      phone: updatedUser.phone,
+      birthDate: updatedUser.birthDate,
+      personType: updatedUser.personType,
+      nitPersonaNatural: updatedUser.nitPersonaNatural,
+      razonSocial: updatedUser.razonSocial,
+      sociedad: updatedUser.sociedad,
+      nitPersonaJuridica: updatedUser.nitPersonaJuridica,
+      matriculaMercantil: updatedUser.matriculaMercantil,
+      fechaDeConstitucion: updatedUser.fechaDeConstitucion,
+      createdAt: updatedUser.createdAt,
+      updatedAt: updatedUser.updatedAt,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 
 export const verifyToken = async (req, res) => {
   const { token } = req.cookies;
@@ -215,6 +329,7 @@ export const verifyToken = async (req, res) => {
     return res.json({
       id: userFound._id,
       email: userFound.email,
+      userType: userFound.userType,
     });
   });
 };

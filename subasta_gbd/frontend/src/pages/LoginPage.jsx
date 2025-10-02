@@ -15,7 +15,7 @@ function LoginPage() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { signin,errors:loginErrors,isAuthenticated } = useAuth();
+  const { signin,errors:loginErrors,isAuthenticated,user } = useAuth();
 
   const onSubmit = handleSubmit((data) => {
     signin(data);
@@ -25,10 +25,25 @@ function LoginPage() {
     navigate("/register");
   };
 
-  useEffect(()=> {
-    if(isAuthenticated) navigate("/dashboardvendedor")
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[isAuthenticated]);
+ useEffect(() => {
+  if (isAuthenticated && user) {
+    console.log("Usuario autenticado:", user);
+    
+    // Redirigir según el userType
+    switch (user.userType) {
+      case "vendedor":
+      case "Vendedor":
+        navigate("/dashboardvendedor");
+        break;
+      case "comprador":
+      case "Comprador":
+        navigate("/dashboardcomprador");
+        break;
+      default:
+        navigate("/dashboardvendedor");
+    }
+  }
+}, [isAuthenticated, user, navigate]);
 
   return (
     <div className="bg-[#13171f] h-screen">
@@ -93,7 +108,7 @@ function LoginPage() {
 
         {/* Área de contenido */}
         <div className="relative flex justify-center items-center h-screen">
-          <div className=" w-[50%]">
+          <div className=" w-[65%]">
             <div className="flex justify-center w-[100%]">
               <div className="w-[50%] bg-[#171d26] rounded-l-lg ">
                 <div className="mt-8">

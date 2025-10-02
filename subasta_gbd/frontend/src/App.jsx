@@ -6,21 +6,30 @@ import { AuthProvider } from "./context/AuthContext";
 import DashboardPage from "./pages/DashboardPage";
 import ProtectedRoute from "./ProtectedRoute";
 import DashboardVendedor from "./layouts/DashboardVendedor"
+import DashboardComprador from "./layouts/DashboardComprador"
+import ProductFormPage from "./pages/ProductFormPage";
+import { ProductProvider } from "./context/ProductContext";
 
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <ProductProvider>
+        <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
           <Route path="/login" element={<LoginPage />}></Route>
           <Route path="/register" element={<RegisterPage />}></Route>
           <Route element={<ProtectedRoute/>}>
+           <Route path="/add-product" element={<ProductFormPage />}></Route>
+           <Route path="/dashboardvendedor/:id" element={<ProductFormPage />}></Route>
             <Route path="/dashboardvendedor" element={<DashboardVendedor />}></Route>
+            <Route path="/dashboardcomprador" element={<DashboardComprador />}></Route>
             <Route path="/dashboard" element={<DashboardPage />}></Route>
           </Route>
         </Routes>
       </BrowserRouter>
+      </ProductProvider>
+      
     </AuthProvider>
   );
 }
