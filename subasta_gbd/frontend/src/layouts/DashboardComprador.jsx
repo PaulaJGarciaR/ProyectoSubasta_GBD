@@ -56,7 +56,7 @@ export default function DashboardComprador() {
             </div>
             <div>
               <h1 className="text-xl font-bold text-[#fa7942]">
-                SubastasNaPas
+                SubastasNaPa
               </h1>
               <p className="text-xs text-slate-400">
                 Tu casa de subastas digital
@@ -79,18 +79,7 @@ export default function DashboardComprador() {
             <span className="font-medium">Inicio</span>
           </button>
 
-          <button
-            onClick={() => handleNavigation("productos")}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-              currentPage === "productos"
-                ? "bg-[#fa7942]"
-                : "hover:bg-slate-700"
-            }`}
-          >
-            <Gavel className="w-5 h-5" />
-            <span>Productos</span>
-          </button>
-
+         
           <button
             onClick={() => handleNavigation("perfil")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
@@ -115,7 +104,7 @@ export default function DashboardComprador() {
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto">
         {/* Header */}
-        <header className="bg-[#171d26] border-b border-slate-700 p-4">
+        <header className="border-b border-slate-700 p-4">
           <div className="flex items-center justify-between">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -168,24 +157,23 @@ export default function DashboardComprador() {
   );
 }
 
-// Componente de Inicio
 function InicioContent() {
   return (
     <>
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        <div className="bg-slate-800 rounded-lg p-6 border border-slate-700">
+        <div className="bg-[#171d26] rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-slate-400 text-sm font-medium">
               Subastas Activas
             </h3>
-            <Gavel className="w-5 h-5 text-[#ff9365]" />
+            <Gavel className="w-5 h-5 text-[#fa7942]" />
           </div>
           <p className="text-3xl font-bold">24</p>
           <p className="text-xs text-green-400 mt-2">↑ 12% vs mes anterior</p>
         </div>
 
-        <div className="bg-slate-800 rounded-lg p-6 border border-slate-700">
+        <div className="bg-[#171d26] rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-slate-400 text-sm font-medium">Mis Pujas</h3>
             <Clock className="w-5 h-5 text-[#fa7942]" />
@@ -194,7 +182,7 @@ function InicioContent() {
           <p className="text-xs text-slate-400 mt-2">En progreso</p>
         </div>
 
-        <div className="bg-slate-800 rounded-lg p-6 border border-slate-700">
+        <div className="bg-[#171d26] rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-slate-400 text-sm font-medium">Ganadas</h3>
             <Trophy className="w-5 h-5 text-[#fa7942]" />
@@ -203,7 +191,7 @@ function InicioContent() {
           <p className="text-xs text-yellow-400 mt-2">Este mes</p>
         </div>
 
-        <div className="bg-slate-800 rounded-lg p-6 border border-slate-700">
+        <div className="bg-[#171d26] rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-slate-400 text-sm font-medium">
               Total Invertido
@@ -216,31 +204,34 @@ function InicioContent() {
       </div>
 
       {/* Subastas Destacadas */}
-      <div className="bg-slate-800 rounded-lg border border-slate-700 p-6 mb-6">
+      <div className="bg-[#171d26] rounded-lg p-6 mb-6">
         <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
           <Gavel className="w-6 h-6 text-[#fa7942]" />
           Subastas Destacadas
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[1, 2, 3].map((item) => (
             <div
-              key={item}
-              className="bg-slate-700 rounded-lg overflow-hidden hover:ring-2 hover:ring-[#fa7942] transition-all cursor-pointer"
+          
+              className="bg-[#334155] rounded-lg overflow-hidden hover:ring-2 hover:ring-[#fa7942] transition-all cursor-pointer"
             >
-              <div className="h-48 bg-slate-600 flex items-center justify-center">
-                <Gavel className="w-12 h-12 text-slate-500" />
+              <div className=" bg-slate-600 flex items-center justify-center">
+                <div className="h-72 w-full overflow-hidden">
+                  <img className="overflow-hidden" src="https://lamparasilumeco.com/wp-content/uploads/2024/07/3299-A-1772-3-3.jpg" alt="" />
+
+                </div>
+              
               </div>
               <div className="p-4">
                 <h3 className="font-semibold mb-2">
-                  Artículo de Subasta {item}
+                  LÁMPARA COLGANTE TRITONY
                 </h3>
                 <p className="text-sm text-slate-400 mb-3">
-                  Descripción breve del artículo en subasta
+                  La lámpara colgante TRITONY está fabricada con una pantalla de alambre que ofrece un aspecto especial gracias a su forma en forma de canasta.
                 </p>
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs text-slate-400">Puja Actual</p>
-                    <p className="text-lg font-bold text-[#fa7942]">$500</p>
+                    <p className="text-lg font-bold text-[#fa7942]">$500.000</p>
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-slate-400">Termina en</p>
@@ -252,82 +243,34 @@ function InicioContent() {
                 </button>
               </div>
             </div>
-          ))}
         </div>
       </div>
 
       {/* Actividad Reciente */}
-      <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
+      <div className="bg-[#171d26] rounded-lg p-6">
         <h2 className="text-xl font-bold mb-4">Actividad Reciente</h2>
         <div className="space-y-4">
-          {[1, 2, 3, 4].map((item) => (
             <div
-              key={item}
-              className="flex items-center justify-between p-4 bg-slate-700 rounded-lg"
+              className="flex items-center justify-between p-4 bg-[#334155] rounded-lg"
             >
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-slate-600 rounded-lg flex items-center justify-center">
                   <Gavel className="w-6 h-6 text-[#fa7942]" />
                 </div>
                 <div>
-                  <p className="font-medium">Nueva puja en "Artículo {item}"</p>
-                  <p className="text-sm text-slate-400">Hace {item} hora(s)</p>
+                  <p className="font-medium">Nueva puja en "Artículo"</p>
+                  <p className="text-sm text-slate-400">Hace 1 hora(s)</p>
                 </div>
               </div>
-              <span className="text-[#fa7942] font-semibold">$450</span>
+              <span className="text-[#fa7942] font-semibold">$550.000</span>
             </div>
-          ))}
         </div>
       </div>
     </>
   );
 }
 
-// Componente de Mis Pujas
-function PujasContent() {
-  return (
-    <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
-      <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-        <Clock className="w-7 h-7 text-[#fa7942]" />
-        Mis Pujas Activas
-      </h2>
-      <div className="space-y-4">
-        {[1, 2, 3, 4, 5].map((item) => (
-          <div
-            key={item}
-            className="flex items-center justify-between p-4 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-slate-600 rounded-lg flex items-center justify-center">
-                <Gavel className="w-8 h-8 text-[#fa7942]" />
-              </div>
-              <div>
-                <p className="font-semibold text-lg">
-                  Artículo en Subasta {item}
-                </p>
-                <p className="text-sm text-slate-400">
-                  Tu puja:{" "}
-                  <span className="text-[#fa7942] font-semibold">
-                    ${300 + item * 100}
-                  </span>
-                </p>
-                <p className="text-xs text-slate-400 mt-1">
-                  Termina en: {item + 1}h {30 + item * 5}m
-                </p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="text-xs text-slate-400 mb-2">Estado</p>
-              <span className="px-3 py-1 bg-green-500 rounded-full text-xs font-semibold">
-                Ganando
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+
 
 
 
@@ -337,11 +280,11 @@ function PerfilContent() {
     <div className="max-w-4xl mx-auto">
       <div className="bg-slate-800 rounded-lg border border-slate-700 p-6 mb-6">
         <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-          <User className="w-7 h-7 text-orange-500" />
+          <User className="w-7 h-7 text-[#fa7942]" />
           Mi Perfil
         </h2>
         <div className="flex items-center gap-6 mb-6">
-          <div className="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center">
+          <div className="w-24 h-24 bg-[#fa7942] rounded-full flex items-center justify-center">
             <User className="w-12 h-12" />
           </div>
           <div className="flex-1">
@@ -349,7 +292,7 @@ function PerfilContent() {
             <p className="text-slate-400 mb-1">pjgarciar1@ufpso.edu.co</p>
             <p className="text-sm text-slate-500">Miembro desde Enero 2025</p>
           </div>
-          <button className="bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded-lg font-medium transition-colors">
+          <button className="bg-[#fa7942]  px-6 py-2 rounded-lg font-medium transition-colors">
             Editar Perfil
           </button>
         </div>
