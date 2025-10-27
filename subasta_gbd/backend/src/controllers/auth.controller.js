@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import { createAccessToken } from "../libs/jwt.js";
 import { TOKEN_SECRET } from "../config.js";
+import Product from "../models/product.model.js";
 import jwt from 'jsonwebtoken'; 
 
 export const register = async (req, res) => {
@@ -332,4 +333,51 @@ export const verifyToken = async (req, res) => {
       userType: userFound.userType,
     });
   });
+};
+
+export const deleteProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    // Obtener información del usuario
+    const userFound = await User.findById(userId);
+    
+    if (!userFound) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+    
+    const userType = userFound.userType;
+    
+    // Si es vendedor, eliminar sus productos
+    if (userType === 'vendedor') {
+      // Eliminar todos los productos del vendedor
+      const deleteResult = await Product.deleteMany({ user: userId });
+      
+      console.log(`Productos eliminados: ${deleteResult.deletedCount}`);
+    }
+    
+    // Eliminar el usuario
+    await User.findByIdAndDelete(userId);
+    
+    // Limpiar cookie
+    res.cookie('token', '', {
+      expires: new Date(0),
+      sameSite: 'none',
+      secure: true,
+      httpOnly: false
+    });
+    
+    return res.json({ 
+      message: 'Cuenta eliminada exitosamente',
+      userType: userType,
+      deletedProducts: userType === 'vendedor' 
+    });
+    
+  } catch (error) {
+    console.error('Error al eliminar cuenta:', error);
+    return res.status(500).json({ 
+      message: 'Error al eliminar la cuenta',
+      error: error.message 
+    });
+  }
 };

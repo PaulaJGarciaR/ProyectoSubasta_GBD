@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
+import Swal from "sweetalert2";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ function LoginPage() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { signin,errors:loginErrors,isAuthenticated,user } = useAuth();
+  const { signin, errors: loginErrors, isAuthenticated, user } = useAuth();
 
   const onSubmit = handleSubmit((data) => {
     signin(data);
@@ -25,25 +26,43 @@ function LoginPage() {
     navigate("/register");
   };
 
- useEffect(() => {
-  if (isAuthenticated && user) {
-    console.log("Usuario autenticado:", user);
-    
-    // Redirigir según el userType
-    switch (user.userType) {
-      case "vendedor":
-      case "Vendedor":
-        navigate("/dashboardvendedor");
-        break;
-      case "comprador":
-      case "Comprador":
-        navigate("/dashboardcomprador");
-        break;
-      default:
-        navigate("/dashboardvendedor");
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      console.log("Usuario autenticado:", user);
+
+      // Mostrar mensaje de éxito antes de redirigir
+      Swal.fire({
+        title: "¡Autenticación Exitosa!",
+        color: "#fff",
+        html: `
+          <div class="text-center text-white">
+            <p class="text-lg mb-2 text-white">Bienvenido a SubastasNaPa</p>
+            <p class="text-white">${user.email}</p>
+          </div>
+        `,
+        icon: "success",
+        background: "#171d26",
+        confirmButtonColor: "#fa7942",
+        confirmButtonText: "Continuar",
+        timer: 3000,
+        timerProgressBar: true,
+      }).then(() => {
+        // Redirigir según el userType después de cerrar el modal
+        switch (user.userType) {
+          case "vendedor":
+          case "Vendedor":
+            navigate("/dashboardvendedor");
+            break;
+          case "comprador":
+          case "Comprador":
+            navigate("/dashboardcomprador");
+            break;
+          default:
+            navigate("/dashboardvendedor");
+        }
+      });
     }
-  }
-}, [isAuthenticated, user, navigate]);
+  }, [isAuthenticated, user, navigate]);
 
   return (
     <div className="bg-[#13171f] h-screen">
@@ -148,18 +167,17 @@ function LoginPage() {
                   </p>
                 </div>
                 <div className="flex flex-col justify-center mt-2">
-                    <div className="w-[100%]">
-                      {loginErrors.map((error, i) => (
-                        <div
-                          className="bg-[#E53935] p-2 text-white mb-2 font-semibold"
-                          key={i}
-                        >
-                          {error}
-                        </div>
-                      ))}
-                    </div>
+                  <div className="w-[100%]">
+                    {loginErrors.map((error, i) => (
+                      <div
+                        className="bg-[#E53935] p-2 text-white mb-2 font-semibold"
+                        key={i}
+                      >
+                        {error}
+                      </div>
+                    ))}
                   </div>
-                
+                </div>
 
                 <form onSubmit={onSubmit} className=" w-[100%]" action="">
                   <div className="flex justify-center">

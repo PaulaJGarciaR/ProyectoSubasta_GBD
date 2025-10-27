@@ -34,9 +34,11 @@ export const registerSchema = z.object({
       message: "Debe tener 10 dígitos",
     }),
 
-  documentIssueDate: z.coerce.date({
-    required_error: "La fecha de expedición es requerida",
-  }).max(new Date(), "La fecha de expedición no puede ser futura"),
+  documentIssueDate: z.coerce
+    .date({
+      required_error: "La fecha de expedición es requerida",
+    })
+    .max(new Date(), "La fecha de expedición no puede ser futura"),
 
   country: z
     .string({
