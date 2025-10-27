@@ -684,7 +684,7 @@ function InicioContent() {
               {products.map((product) => (
                 <div
                   key={product._id}
-                  className="group bg-[#1a2332] rounded-xl overflow-hidden hover:shadow-lg hover:shadow-blue-900/20 transition-all duration-300 border border-gray-800/30 hover:border-blue-500/30 hover:-translate-y-1"
+                  className="group bg-[#1a2332] rounded-xl overflow-hidden hover:shadow-lg hover:shadow-blue-900/20 transition-all duration-300 border border-gray-800/30 hover:border-[#ff9365]/30 hover:-translate-y-1"
                 >
                   {/* Imagen */}
                   <div className="relative overflow-hidden">
@@ -699,7 +699,7 @@ function InicioContent() {
                     
                     <div className="absolute inset-0 bg-gradient-to-t from-[#1a2332]/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     
-                    <div className="absolute top-4 left-4 px-3 py-1.5 rounded-lg bg-blue-500/90 backdrop-blur-sm">
+                    <div className="absolute top-4 left-4 px-3 py-1.5 rounded-lg bg-[#fa7942] backdrop-blur-sm">
                       <span className="text-white text-xs font-semibold">
                         {product.estado || product.status || "Activa"}
                       </span>
@@ -708,7 +708,7 @@ function InicioContent() {
 
                   {/* Contenido */}
                   <div className="p-6 space-y-4">
-                    <h4 className="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors line-clamp-1">
+                    <h4 className="text-lg font-semibold text-white group-hover:text-[#fa7942] transition-colors line-clamp-1">
                       {getProductName(product)}
                     </h4>
 
@@ -718,7 +718,7 @@ function InicioContent() {
 
                     <div className="pt-2">
                       <div className="flex items-center gap-1.5 text-gray-500 text-xs mb-1.5">
-                        <TrendingUp size={14} className="text-green-500" />
+                        <TrendingUp size={14} className="text-[#fa7942]" />
                         <span>Precio actual</span>
                       </div>
                       
@@ -735,14 +735,14 @@ function InicioContent() {
                     <div className="space-y-2.5 pt-3 border-t border-gray-800/50">
                       <div className="flex items-center gap-2.5 text-gray-300 text-sm">
                         <div className="p-1 bg-orange-500/10 rounded">
-                          <Clock size={16} className="text-orange-400" />
+                          <Clock size={16} className="text-[#fa7942]" />
                         </div>
                         <span>{calculateTimeLeft(product)}</span>
                       </div>
                       
                       <div className="flex items-center gap-2.5 text-gray-300 text-sm">
                         <div className="p-1 bg-blue-500/10 rounded">
-                          <Calendar size={16} className="text-blue-400" />
+                          <Calendar size={16} className="text-[#fa7942]" />
                         </div>
                         <span>{getProductEndDate(product)}</span>
                       </div>
@@ -750,7 +750,7 @@ function InicioContent() {
 
                     <button 
                       onClick={() => handleViewDetails(product)}
-                      className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 rounded-lg text-white font-semibold transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+                      className="w-full py-3 bg-gradient-to-r from-[#fa7942] to-[#fa7942] hover:from-[#fa7942] hover:to-[#ff9365] cursor-pointer rounded-lg text-white font-semibold transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
                     >
                       <Eye size={18} />
                       Ver Subasta
@@ -766,18 +766,18 @@ function InicioContent() {
       {/* Modal de Detalles del Producto (DATOS DEL BACKEND) */}
       {selectedProduct && (
         <div className="fixed inset-0 bg-black/80 h-screen flex items-center justify-center p-4 overflow-y-auto  z-[60]">
-          <div className="bg-[#1a2332] rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-gray-800/50 shadow-2xl">
+          <div className="bg-[#13171f] rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-gray-800/50 shadow-2xl">
             {/* Header del Modal */}
             <div className="relative">
               <img
                 src={getProductImage(selectedProduct)}
                 alt={getProductName(selectedProduct)}
-                className="w-full h-80 object-cover rounded-t-2xl"
+                className="w-full h-96 object-cover rounded-t-2xl"
                 onError={(e) => {
                   e.target.src = 'https://via.placeholder.com/800x400?text=Sin+Imagen';
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1a2332] via-transparent to-transparent rounded-t-2xl" />
+              <div className="absolute inset-0  rounded-t-2xl" />
               
               <button
                 onClick={handleCloseModal}
@@ -787,7 +787,7 @@ function InicioContent() {
               </button>
 
               <div className="absolute bottom-4 left-6">
-                <div className="inline-block px-3 py-1.5 rounded-lg bg-blue-500/90 backdrop-blur-sm mb-2">
+                <div className="inline-block px-3 py-1.5 rounded-lg bg-[#fa7942] backdrop-blur-sm mb-2">
                   <span className="text-white text-sm font-semibold">
                     {selectedProduct.estado || selectedProduct.status || "Activa"}
                   </span>
@@ -810,9 +810,9 @@ function InicioContent() {
               {/* Grid de Información */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Precio Actual */}
-                <div className="bg-[#13171f] p-6 rounded-xl border border-gray-800/50">
+                <div className="bg-[#171d26] p-6 rounded-xl">
                   <div className="flex items-center gap-2 text-gray-400 mb-3">
-                    <TrendingUp size={20} className="text-green-500" />
+                    <TrendingUp size={20} className="text-[#fa7942]" />
                     <span className="text-sm font-medium">Precio Actual</span>
                   </div>
                   <div className="flex items-baseline gap-2">
@@ -826,7 +826,7 @@ function InicioContent() {
                 </div>
 
                 {/* Tiempo Restante */}
-                <div className="bg-[#13171f] p-6 rounded-xl border border-gray-800/50">
+                <div className="bg-[#171d26] p-6 rounded-xl">
                   <div className="flex items-center gap-2 text-gray-400 mb-3">
                     <Clock size={20} className="text-orange-500" />
                     <span className="text-sm font-medium">Tiempo Restante</span>
@@ -858,17 +858,12 @@ function InicioContent() {
                   </div>
                 </div>
               )}
-
-              {/* Ubicación */}
-              <div className="flex items-center gap-3 text-gray-300 bg-[#13171f] p-4 rounded-xl border border-gray-800/50">
-                <MapPin size={20} className="text-red-500" />
-                <span>{getProductLocation(selectedProduct)}</span>
-              </div>
+              
 
               {/* Sección de Puja */}
-              <div className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 p-6 rounded-xl border border-blue-500/30">
+              <div className="bg-[#171d26] p-6 rounded-xl">
                 <div className="flex items-center gap-2 text-white mb-4">
-                  <DollarSign size={24} className="text-green-500" />
+                  <DollarSign size={24} className="text-[#fa7942]" />
                   <span className="text-xl font-bold">Realizar Puja</span>
                 </div>
 
@@ -886,7 +881,7 @@ function InicioContent() {
                         value={bidAmount}
                         onChange={(e) => setBidAmount(e.target.value)}
                         placeholder={`Mínimo: ${(getProductPrice(selectedProduct) * 1.05).toLocaleString()}`}
-                        className="w-full pl-10 pr-4 py-4 bg-[#13171f] border border-gray-700 rounded-lg text-white text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full pl-10 pr-4 py-4 bg-[#13171f] rounded-lg text-white text-lg focus:outline-none focus:ring-2 focus:ring-[#fa7942] focus:border-transparent"
                       />
                     </div>
                     <div className="flex items-start gap-2 mt-2 text-xs text-gray-400">
@@ -901,7 +896,7 @@ function InicioContent() {
                   <div className="flex gap-3">
                     <button
                       onClick={handlePlaceBid}
-                      className="flex-1 py-4 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 rounded-lg text-white font-bold text-lg transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                      className="flex-1 py-4 bg-[#fa7942] hover:bg-[#ff9365] cursor-pointer rounded-lg text-white font-bold text-lg transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
                     >
                       <Gavel size={20} />
                       Confirmar Puja

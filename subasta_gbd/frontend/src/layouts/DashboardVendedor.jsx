@@ -265,11 +265,11 @@ function InicioContent({ onOpenModal, refreshKey }) {
                 </h3>
               </div>
               <div className="bg-[#13171f] p-3 rounded-xl">
-                <DollarSign className="w-6 h-6 text-green-600" />
+                <DollarSign className="w-6 h-6 text-[#fa7942]" />
               </div>
             </div>
             <p className="text-sm text-gray-500">
-              <span className="text-green-600 font-medium">+12%</span> vs. mes anterior
+              <span className="text-[#fa7942] font-medium">+12%</span> vs. mes anterior
             </p>
           </div>
 
@@ -285,7 +285,7 @@ function InicioContent({ onOpenModal, refreshKey }) {
                 </h3>
               </div>
               <div className="bg-[#13171f] p-3 rounded-xl">
-                <Package className="w-6 h-6 text-yellow-600" />
+                <Package className="w-6 h-6 text-[#fa7942]" />
               </div>
             </div>
             <p className="text-sm text-gray-500">
@@ -305,11 +305,11 @@ function InicioContent({ onOpenModal, refreshKey }) {
                 </h3>
               </div>
               <div className="bg-[#13171f] p-3 rounded-xl">
-                <TrendingUp className="w-6 h-6 text-blue-600" />
+                <TrendingUp className="w-6 h-6 text-[#fa7942]" />
               </div>
             </div>
             <p className="text-sm text-gray-500">
-              <span className="text-blue-600 font-medium">+23</span> hoy
+              <span className="text-[#fa7942] font-medium">+23</span> hoy
             </p>
           </div>
         </div>
