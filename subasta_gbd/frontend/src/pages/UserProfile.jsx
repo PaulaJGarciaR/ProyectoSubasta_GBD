@@ -1,37 +1,51 @@
-import React, { useState, useEffect } from 'react';
-import { User, FileText, MapPin, Phone, Mail, Calendar, Edit2, Save, X, Loader, Building } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import {
+  User,
+  FileText,
+  MapPin,
+  Phone,
+  Mail,
+  Calendar,
+  Edit2,
+  Save,
+  X,
+  Loader,
+  Building,
+  Trash2,
+} from "lucide-react";
+import Swal from "sweetalert2";
 
 export default function UserProfile() {
   const [profile, setProfile] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
   const [formData, setFormData] = useState({
-    userType: '',
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    secondLastName: '',
-    documentType: '',
-    documentNumber: '',
-    documentIssueDate: '',
-    country: '',
-    state: '',
-    city: '',
-    address: '',
-    email: '',
-    phone: '',
-    birthDate: '',
-    personType: '',
-    nitPersonaNatural: '',
-    razonSocial: '',
-    sociedad: '',
-    nitPersonaJuridica: '',
-    matriculaMercantil: '',
-    fechaDeConstitucion: ''
+    userType: "",
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    secondLastName: "",
+    documentType: "",
+    documentNumber: "",
+    documentIssueDate: "",
+    country: "",
+    state: "",
+    city: "",
+    address: "",
+    email: "",
+    phone: "",
+    birthDate: "",
+    personType: "",
+    nitPersonaNatural: "",
+    razonSocial: "",
+    sociedad: "",
+    nitPersonaJuridica: "",
+    matriculaMercantil: "",
+    fechaDeConstitucion: "",
   });
 
   useEffect(() => {
@@ -41,48 +55,52 @@ export default function UserProfile() {
   const fetchProfile = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      
-      const response = await fetch('http://localhost:4000/api/profile', {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch("http://localhost:4000/api/profile", {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-         credentials: 'include'
+        credentials: "include",
       });
 
       if (response.ok) {
         const data = await response.json();
         setProfile(data);
         setFormData({
-          userType: data.userType || '',
-          firstName: data.firstName || '',
-          middleName: data.middleName || '',
-          lastName: data.lastName || '',
-          secondLastName: data.secondLastName || '',
-          documentType: data.documentType || '',
-          documentNumber: data.documentNumber || '',
-          documentIssueDate: data.documentIssueDate ? data.documentIssueDate.split('T')[0] : '',
-          country: data.country || '',
-          state: data.state || '',
-          city: data.city || '',
-          address: data.address || '',
-          email: data.email || '',
-          phone: data.phone || '',
-          birthDate: data.birthDate ? data.birthDate.split('T')[0] : '',
-          personType: data.personType || '',
-          nitPersonaNatural: data.nitPersonaNatural || '',
-          razonSocial: data.razonSocial || '',
-          sociedad: data.sociedad || '',
-          nitPersonaJuridica: data.nitPersonaJuridica || '',
-          matriculaMercantil: data.matriculaMercantil || '',
-          fechaDeConstitucion: data.fechaDeConstitucion ? data.fechaDeConstitucion.split('T')[0] : ''
+          userType: data.userType || "",
+          firstName: data.firstName || "",
+          middleName: data.middleName || "",
+          lastName: data.lastName || "",
+          secondLastName: data.secondLastName || "",
+          documentType: data.documentType || "",
+          documentNumber: data.documentNumber || "",
+          documentIssueDate: data.documentIssueDate
+            ? data.documentIssueDate.split("T")[0]
+            : "",
+          country: data.country || "",
+          state: data.state || "",
+          city: data.city || "",
+          address: data.address || "",
+          email: data.email || "",
+          phone: data.phone || "",
+          birthDate: data.birthDate ? data.birthDate.split("T")[0] : "",
+          personType: data.personType || "",
+          nitPersonaNatural: data.nitPersonaNatural || "",
+          razonSocial: data.razonSocial || "",
+          sociedad: data.sociedad || "",
+          nitPersonaJuridica: data.nitPersonaJuridica || "",
+          matriculaMercantil: data.matriculaMercantil || "",
+          fechaDeConstitucion: data.fechaDeConstitucion
+            ? data.fechaDeConstitucion.split("T")[0]
+            : "",
         });
       } else if (response.status === 404) {
-        setError('Perfil no encontrado');
+        setError("Perfil no encontrado");
       }
     } catch (err) {
-      setError('Error al cargar el perfil');
+      setError("Error al cargar el perfil");
       console.error(err);
     } finally {
       setLoading(false);
@@ -91,42 +109,42 @@ export default function UserProfile() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:4000/api/profile', {
-        method: 'PUT',
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:4000/api/profile", {
+        method: "PUT",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-        credentials: 'include',
-        body: JSON.stringify(formData)
+        credentials: "include",
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {
         const data = await response.json();
         setProfile(data);
         setIsEditing(false);
-        setSuccess('Perfil actualizado correctamente');
-        setTimeout(() => setSuccess(''), 3000);
+        setSuccess("Perfil actualizado correctamente");
+        setTimeout(() => setSuccess(""), 3000);
       } else {
         const errorData = await response.json();
-        setError(errorData.message || 'Error al guardar el perfil');
+        setError(errorData.message || "Error al guardar el perfil");
       }
     } catch (err) {
-      setError('Error de conexión');
+      setError("Error de conexión");
       console.error(err);
     } finally {
       setSaving(false);
@@ -136,31 +154,92 @@ export default function UserProfile() {
   const cancelEdit = () => {
     if (profile) {
       setFormData({
-        userType: profile.userType || '',
-        firstName: profile.firstName || '',
-        middleName: profile.middleName || '',
-        lastName: profile.lastName || '',
-        secondLastName: profile.secondLastName || '',
-        documentType: profile.documentType || '',
-        documentNumber: profile.documentNumber || '',
-        documentIssueDate: profile.documentIssueDate ? profile.documentIssueDate.split('T')[0] : '',
-        country: profile.country || '',
-        state: profile.state || '',
-        city: profile.city || '',
-        address: profile.address || '',
-        email: profile.email || '',
-        phone: profile.phone || '',
-        birthDate: profile.birthDate ? profile.birthDate.split('T')[0] : '',
-        personType: profile.personType || '',
-        nitPersonaNatural: profile.nitPersonaNatural || '',
-        razonSocial: profile.razonSocial || '',
-        sociedad: profile.sociedad || '',
-        nitPersonaJuridica: profile.nitPersonaJuridica || '',
-        matriculaMercantil: profile.matriculaMercantil || '',
-        fechaDeConstitucion: profile.fechaDeConstitucion ? profile.fechaDeConstitucion.split('T')[0] : ''
+        userType: profile.userType || "",
+        firstName: profile.firstName || "",
+        middleName: profile.middleName || "",
+        lastName: profile.lastName || "",
+        secondLastName: profile.secondLastName || "",
+        documentType: profile.documentType || "",
+        documentNumber: profile.documentNumber || "",
+        documentIssueDate: profile.documentIssueDate
+          ? profile.documentIssueDate.split("T")[0]
+          : "",
+        country: profile.country || "",
+        state: profile.state || "",
+        city: profile.city || "",
+        address: profile.address || "",
+        email: profile.email || "",
+        phone: profile.phone || "",
+        birthDate: profile.birthDate ? profile.birthDate.split("T")[0] : "",
+        personType: profile.personType || "",
+        nitPersonaNatural: profile.nitPersonaNatural || "",
+        razonSocial: profile.razonSocial || "",
+        sociedad: profile.sociedad || "",
+        nitPersonaJuridica: profile.nitPersonaJuridica || "",
+        matriculaMercantil: profile.matriculaMercantil || "",
+        fechaDeConstitucion: profile.fechaDeConstitucion
+          ? profile.fechaDeConstitucion.split("T")[0]
+          : "",
       });
       setIsEditing(false);
-      setError('');
+      setError("");
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    const result = await Swal.fire({
+      title: "¿Eliminar Cuenta?",
+       color: "#fff",
+
+      html: `
+        <p class="text-gray-600 mb-4">Esta acción es permanente y no se puede deshacer. Se eliminarán todos tus datos.</p>
+      `,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Sí, eliminar mi cuenta",
+      cancelButtonText: "Cancelar",
+      showLoaderOnConfirm: true,
+      background: "#171d26",
+      preConfirm: async () => {
+        try {
+          const token = localStorage.getItem("token");
+          const response = await fetch("http://localhost:4000/api/profile", {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Error al eliminar la cuenta");
+          }
+
+          return response.json();
+        } catch (error) {
+          Swal.showValidationMessage(`Error: ${error.message}`);
+        }
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    });
+
+    if (result.isConfirmed) {
+      await Swal.fire({
+        title: "Cuenta Eliminada",
+        color: "#fff",
+        background: "#171d26",
+        text: "Tu cuenta ha sido eliminada exitosamente",
+        icon: "success",
+        confirmButtonColor: "#10b981",
+        confirmButtonText: "Aceptar",
+      });
+
+      localStorage.removeItem("token");
+      window.location.href = "/";
     }
   };
 
@@ -172,8 +251,8 @@ export default function UserProfile() {
     );
   }
 
-  const isPersonaNatural = formData.personType === 'natural';
-  const isPersonaJuridica = formData.personType === 'juridica';
+  const isPersonaNatural = formData.personType === "natural";
+  const isPersonaJuridica = formData.personType === "juridica";
 
   return (
     <div className="min-h-screen py-8 px-4">
@@ -181,15 +260,26 @@ export default function UserProfile() {
         <div className="bg-[#171d26] rounded-lg shadow-md p-6 mb-6">
           <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-white">Mi Perfil</h1>
-            {profile && !isEditing && (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="inline-flex items-center px-4 py-2 bg-[#fa7942] text-white rounded-lg cursor-pointer transition"
-              >
-                <Edit2 className="w-4 h-4 mr-2" />
-                Editar
-              </button>
-            )}
+            <div className="flex gap-3">
+              {profile && !isEditing && (
+                <>
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="inline-flex items-center px-4 py-2 bg-[#fa7942] text-white rounded-lg cursor-pointer transition hover:bg-[#e86832]"
+                  >
+                    <Edit2 className="w-4 h-4 mr-2" />
+                    Editar
+                  </button>
+                  <button
+                    onClick={handleDeleteAccount}
+                    className="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg cursor-pointer transition hover:bg-red-700"
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Eliminar Cuenta
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
@@ -215,7 +305,7 @@ export default function UserProfile() {
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium #f7f9fb mb-2">
+                    <label className="block text-sm font-medium text-[#f7f9fb] mb-2">
                       Primer Nombre *
                     </label>
                     <input
@@ -225,7 +315,7 @@ export default function UserProfile() {
                       onChange={handleInputChange}
                       required
                       minLength={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className=" p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
                     />
                   </div>
                   <div>
@@ -237,7 +327,7 @@ export default function UserProfile() {
                       name="middleName"
                       value={formData.middleName}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
                     />
                   </div>
                   <div>
@@ -251,7 +341,7 @@ export default function UserProfile() {
                       onChange={handleInputChange}
                       required
                       minLength={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
                     />
                   </div>
                   <div>
@@ -263,7 +353,7 @@ export default function UserProfile() {
                       name="secondLastName"
                       value={formData.secondLastName}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className=" p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
                     />
                   </div>
                   <div>
@@ -276,7 +366,7 @@ export default function UserProfile() {
                       value={formData.birthDate}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="mt-2 p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
                     />
                   </div>
                 </div>
@@ -298,7 +388,7 @@ export default function UserProfile() {
                       value={formData.documentType}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="mt-2 p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
                     >
                       <option value="">Seleccionar...</option>
                       <option value="CC">Cédula de Ciudadanía</option>
@@ -318,7 +408,7 @@ export default function UserProfile() {
                       onChange={handleInputChange}
                       required
                       minLength={10}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="mt-2 p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
                     />
                   </div>
                   <div>
@@ -331,7 +421,7 @@ export default function UserProfile() {
                       value={formData.documentIssueDate}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="mt-2 p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
                     />
                   </div>
                 </div>
@@ -354,7 +444,7 @@ export default function UserProfile() {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="mt-2 p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
                     />
                   </div>
                   <div>
@@ -368,7 +458,7 @@ export default function UserProfile() {
                       onChange={handleInputChange}
                       required
                       minLength={10}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="mt-2 p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
                     />
                   </div>
                 </div>
@@ -392,7 +482,7 @@ export default function UserProfile() {
                       onChange={handleInputChange}
                       required
                       minLength={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="mt-2 p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
                     />
                   </div>
                   <div>
@@ -406,7 +496,7 @@ export default function UserProfile() {
                       onChange={handleInputChange}
                       required
                       minLength={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="mt-2 p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
                     />
                   </div>
                   <div>
@@ -420,7 +510,7 @@ export default function UserProfile() {
                       onChange={handleInputChange}
                       required
                       minLength={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="mt-2 p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
                     />
                   </div>
                   <div>
@@ -434,7 +524,7 @@ export default function UserProfile() {
                       onChange={handleInputChange}
                       required
                       minLength={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="mt-2 p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
                     />
                   </div>
                 </div>
@@ -456,7 +546,7 @@ export default function UserProfile() {
                       value={formData.nitPersonaNatural}
                       onChange={handleInputChange}
                       minLength={9}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="mt-2 p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
                     />
                   </div>
                 </div>
@@ -480,7 +570,7 @@ export default function UserProfile() {
                         value={formData.razonSocial}
                         onChange={handleInputChange}
                         minLength={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="mt-2 p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
                       />
                     </div>
                     <div>
@@ -491,10 +581,12 @@ export default function UserProfile() {
                         name="sociedad"
                         value={formData.sociedad}
                         onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className=" p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
                       >
                         <option value="">Seleccionar...</option>
-                        <option value="SAS">SAS - Sociedad por Acciones Simplificada</option>
+                        <option value="SAS">
+                          SAS - Sociedad por Acciones Simplificada
+                        </option>
                         <option value="SA">SA - Sociedad Anónima</option>
                         <option value="LTDA">LTDA - Sociedad Limitada</option>
                         <option value="SC">Sociedad Colectiva</option>
@@ -510,7 +602,7 @@ export default function UserProfile() {
                         value={formData.nitPersonaJuridica}
                         onChange={handleInputChange}
                         minLength={9}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="mt-2 p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
                       />
                     </div>
                     <div>
@@ -522,7 +614,7 @@ export default function UserProfile() {
                         name="matriculaMercantil"
                         value={formData.matriculaMercantil}
                         onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className=" p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
                       />
                     </div>
                     <div>
@@ -534,7 +626,7 @@ export default function UserProfile() {
                         name="fechaDeConstitucion"
                         value={formData.fechaDeConstitucion}
                         onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className=" p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
                       />
                     </div>
                   </div>
@@ -575,11 +667,15 @@ export default function UserProfile() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-[#202630] p-4 rounded-lg">
                   <p className="text-sm text-[#f7f9fb] mb-1">Tipo de Usuario</p>
-                  <p className="text-lg font-semibold capitalize">{profile.userType}</p>
+                  <p className="text-lg font-semibold text-white capitalize">
+                    {profile.userType}
+                  </p>
                 </div>
                 <div className="bg-[#202630] p-4 rounded-lg">
                   <p className="text-sm text-[#f7f9fb] mb-1">Tipo de Persona</p>
-                  <p className="text-lg font-semibold capitalize">{profile.personType}</p>
+                  <p className="text-lg font-semibold text-white capitalize">
+                    {profile.personType}
+                  </p>
                 </div>
               </div>
 
@@ -591,15 +687,24 @@ export default function UserProfile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-[#f7f9fb]">Nombre Completo</p>
-                    <p className="text-lg font-medium">
-                      {[profile.firstName, profile.middleName, profile.lastName, profile.secondLastName].filter(Boolean).join(' ')}
+                    <p className="text-lg font-medium text-white">
+                      {[
+                        profile.firstName,
+                        profile.middleName,
+                        profile.lastName,
+                        profile.secondLastName,
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-[#f7f9fb]">Fecha de Nacimiento</p>
-                    <p className="text-lg font-medium flex items-center">
+                    <p className="text-sm text-[#f7f9fb]">
+                      Fecha de Nacimiento
+                    </p>
+                    <p className="text-lg font-medium text-white flex items-center">
                       <Calendar className="w-4 h-4 mr-2" />
-                      {new Date(profile.birthDate).toLocaleDateString('es-CO')}
+                      {new Date(profile.birthDate).toLocaleDateString("es-CO")}
                     </p>
                   </div>
                 </div>
@@ -613,15 +718,25 @@ export default function UserProfile() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <p className="text-sm text-[#f7f9fb]">Tipo</p>
-                    <p className="text-lg font-medium">{profile.documentType}</p>
+                    <p className="text-lg font-medium text-white">
+                      {profile.documentType}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-[#f7f9fb]">Número</p>
-                    <p className="text-lg font-medium">{profile.documentNumber}</p>
+                    <p className="text-lg font-medium text-white">
+                      {profile.documentNumber}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-sm text-[#f7f9fb]">Fecha de Expedición</p>
-                    <p className="text-lg font-medium">{new Date(profile.documentIssueDate).toLocaleDateString('es-CO')}</p>
+                    <p className="text-sm text-[#f7f9fb]">
+                      Fecha de Expedición
+                    </p>
+                    <p className="text-lg font-medium text-white">
+                      {new Date(profile.documentIssueDate).toLocaleDateString(
+                        "es-CO"
+                      )}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -634,14 +749,14 @@ export default function UserProfile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-[#f7f9fb]">Email</p>
-                    <p className="text-lg font-medium flex items-center">
+                    <p className="text-lg font-medium text-white flex items-center">
                       <Mail className="w-4 h-4 mr-2" />
                       {profile.email}
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-[#f7f9fb]">Teléfono</p>
-                    <p className="text-lg font-medium flex items-center">
+                    <p className="text-lg font-medium text-white flex items-center">
                       <Phone className="w-4 h-4 mr-2" />
                       {profile.phone}
                     </p>
@@ -656,20 +771,27 @@ export default function UserProfile() {
                 </h2>
                 <div className="text-[#f7f9fb]">
                   <p>{profile.address}</p>
-                  <p>{profile.city}, {profile.state}</p>
+                  <p>
+                    {profile.city}, {profile.state}
+                  </p>
                   <p>{profile.country}</p>
                 </div>
               </div>
 
-              {profile.personType === 'natural' && profile.nitPersonaNatural && (
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <h2 className="text-xl font-semibold text-white mb-2">Persona Natural</h2>
-                  <p className="text-sm text-gray-600">NIT</p>
-                  <p className="text-lg font-medium">{profile.nitPersonaNatural}</p>
-                </div>
-              )}
+              {profile.personType === "natural" &&
+                profile.nitPersonaNatural && (
+                  <div className="bg-[#202630] p-4 rounded-lg">
+                    <h2 className="text-xl font-semibold text-white mb-2">
+                      Persona Natural
+                    </h2>
+                    <p className="text-sm text-[#f7f9fb]">NIT</p>
+                    <p className="text-lg font-medium text-white">
+                      {profile.nitPersonaNatural}
+                    </p>
+                  </div>
+                )}
 
-              {profile.personType === 'juridica' && (
+              {profile.personType === "juridica" && (
                 <div className="bg-[#202630] p-4 rounded-lg">
                   <h2 className="text-xl font-semibold text-white mb-4 flex items-center">
                     <Building className="w-5 h-5 mr-2" />
@@ -679,32 +801,48 @@ export default function UserProfile() {
                     {profile.razonSocial && (
                       <div>
                         <p className="text-sm text-[#f7f9fb]">Razón Social</p>
-                        <p className="text-lg font-medium">{profile.razonSocial}</p>
+                        <p className="text-lg font-medium text-white">
+                          {profile.razonSocial}
+                        </p>
                       </div>
                     )}
                     {profile.sociedad && (
                       <div>
-                        <p className="text-sm text-[#f7f9fb]">Tipo de Sociedad</p>
-                        <p className="text-lg font-medium">{profile.sociedad}</p>
+                        <p className="text-sm text-[#f7f9fb]">
+                          Tipo de Sociedad
+                        </p>
+                        <p className="text-lg font-medium text-white">
+                          {profile.sociedad}
+                        </p>
                       </div>
                     )}
                     {profile.nitPersonaJuridica && (
                       <div>
                         <p className="text-sm text-[#f7f9fb]">NIT</p>
-                        <p className="text-lg font-medium">{profile.nitPersonaJuridica}</p>
+                        <p className="text-lg font-medium text-white">
+                          {profile.nitPersonaJuridica}
+                        </p>
                       </div>
                     )}
                     {profile.matriculaMercantil && (
                       <div>
-                        <p className="text-sm text-[#f7f9fb]">Matrícula Mercantil</p>
-                        <p className="text-lg font-medium">{profile.matriculaMercantil}</p>
+                        <p className="text-sm text-[#f7f9fb]">
+                          Matrícula Mercantil
+                        </p>
+                        <p className="text-lg font-medium text-white">
+                          {profile.matriculaMercantil}
+                        </p>
                       </div>
                     )}
                     {profile.fechaDeConstitucion && (
                       <div>
-                        <p className="text-sm text-[#f7f9fb]">Fecha de Constitución</p>
-                        <p className="text-lg font-medium">
-                          {new Date(profile.fechaDeConstitucion).toLocaleDateString('es-CO')}
+                        <p className="text-sm text-[#f7f9fb]">
+                          Fecha de Constitución
+                        </p>
+                        <p className="text-lg font-medium text-white">
+                          {new Date(
+                            profile.fechaDeConstitucion
+                          ).toLocaleDateString("es-CO")}
                         </p>
                       </div>
                     )}
@@ -715,7 +853,9 @@ export default function UserProfile() {
           ) : (
             <div className="text-center py-12">
               <User className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-              <p className="text-xl text-gray-600">No se encontró información del perfil</p>
+              <p className="text-xl text-gray-600">
+                No se encontró información del perfil
+              </p>
             </div>
           )}
         </div>

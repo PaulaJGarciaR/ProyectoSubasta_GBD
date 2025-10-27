@@ -9,99 +9,89 @@ import {
   Bell,
   Search,
   X,
+  DollarSign,  
+  Package,    
+  TrendingUp  
 } from "lucide-react";
 import ProductsPage from "../pages/ProductPage";
 import UserProfile from "../pages/UserProfile";
+import ProductFormPage from "../pages/ProductFormPage"; 
 import { useAuth } from "../context/AuthContext";
-
+import Swal from 'sweetalert2';
 
 export default function DashboardVendedor() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState("inicio");
-  const { logout,user} = useAuth();
+  const [currentPage, setCurrentPage] = useState("inicio"); 
+  const [showModal, setShowModal] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false); 
+  const { logout, user } = useAuth();
+  const [refreshKey, setRefreshKey] = useState(0); 
 
-  const handleNavigation = (page) => {
-    setCurrentPage(page);
-    setSidebarOpen(false);
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setRefreshKey(prev => prev + 1); 
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage === currentPage) return;
+    
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentPage(newPage);
+      setIsTransitioning(false);
+    }, 150);
   };
 
   const renderContent = () => {
     switch (currentPage) {
       case "inicio":
-        return <InicioContent />;
+        return <InicioContent onOpenModal={() => setShowModal(true)} refreshKey={refreshKey} />;
       case "productos":
-        return <ProductsPage />;
+        return <ProductsPage key={refreshKey} onRefresh={refreshKey} />;
       case "perfil":
-        return <UserProfile />;
+        return <UserProfile onBack={() => handlePageChange("inicio")} />;
       default:
-        return <InicioContent />;
+        return <InicioContent onOpenModal={() => setShowModal(true)} refreshKey={refreshKey} />;
     }
   };
 
+  const handleLogout = async () => {
+  const result = await Swal.fire({
+    title: '¿Cerrar sesión?',
+    text: '¿Estás seguro que deseas salir de tu cuenta?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#fa7942',
+    cancelButtonColor: '#64748b',
+    confirmButtonText: 'Sí, cerrar sesión',
+    cancelButtonText: 'Cancelar',
+    background: '#171d26',
+    color: '#f7f9fb',
+    customClass: {
+      popup: 'border border-slate-700'
+    }
+  });
+
+  if (result.isConfirmed) {
+    // Mostrar mensaje de despedida
+    await Swal.fire({
+      title: '¡Hasta pronto!',
+      text: 'Has cerrado sesión exitosamente',
+      icon: 'success',
+      confirmButtonColor: '#fa7942',
+      background: '#171d26',
+      color: '#f7f9fb',
+      timer: 1500,
+      showConfirmButton: false
+    });
+    
+    // Ejecutar el logout
+    logout();
+  }
+};
+
   return (
     <div className="flex h-screen bg-[#13171f] text-white">
-      {/* Sidebar */}
-      <aside
-        className={`${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } fixed inset-y-0 left-0 z-50 w-64 bg-[#171d26] transition-transform duration-300 lg:translate-x-0 lg:static lg:inset-0`}
-      >
-        <div className="flex items-center justify-between p-6 border-b border-slate-700">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[#fa7942] rounded-lg flex items-center justify-center">
-              <Gavel className="w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-[#fa7942]">
-                SubastasNaPa
-              </h1>
-              <p className="text-xs text-slate-400">
-                Tu casa de subastas digital
-              </p>
-            </div>
-          </div>
-          <button onClick={() => setSidebarOpen(false)} className="lg:hidden">
-            <X className="w-6 h-6" />
-          </button>
-        </div>
-
-        <nav className="p-4 space-y-2">
-          <button
-            onClick={() => handleNavigation("inicio")}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-              currentPage === "inicio" ? "bg-[#fa7942]" : "hover:bg-slate-700"
-            }`}
-          >
-            <Home className="w-5 h-5" />
-            <span className="font-medium">Inicio</span>
-          </button>
-
-          <button
-            onClick={() => handleNavigation("productos")}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-              currentPage === "productos"
-                ? "bg-[#fa7942]"
-                : "hover:bg-slate-700"
-            }`}
-          >
-            <Gavel className="w-5 h-5" />
-            <span>Productos</span>
-          </button>
-
-          <button
-            onClick={() => handleNavigation("perfil")}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-              currentPage === "perfil" ? "bg-[#fa7942]" : "hover:bg-slate-700"
-            }`}
-          >
-            <User className="w-5 h-5" />
-            <span>Mi Perfil</span>
-          </button>
-
-        </nav>
-      </aside>
-
-      {/* Overlay para móvil */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
@@ -110,10 +100,33 @@ export default function DashboardVendedor() {
       )}
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto pt-[88px]">
         {/* Header */}
-        <header className="bg-[#171d26] border-b border-slate-700 p-4">
+        <header className="fixed top-0 left-0 right-0 bg-[#171d26] border-b border-slate-700 p-4 z-30">
           <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between  border-slate-700">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-[#fa7942] rounded-lg flex items-center justify-center">
+                  <button className="cursor-pointer" onClick={() => handlePageChange("inicio")}>
+                      <Gavel className="w-6 h-6" />
+                  </button>
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-[#fa7942]">
+                    SubastasNaPa
+                  </h1>
+                  <p className="text-xs text-slate-400">
+                    Tu casa de subastas digital
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setSidebarOpen(false)}
+                className="lg:hidden"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
             <button
               onClick={() => setSidebarOpen(true)}
               className="lg:hidden p-2 hover:bg-slate-700 rounded-lg"
@@ -135,84 +148,176 @@ export default function DashboardVendedor() {
             <div className="flex items-center gap-4">
               <button className="relative p-2 hover:bg-slate-700 rounded-lg">
                 <Bell className="w-6 h-6" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-ora[#ff9365] rounded-full"></span>
+                <span className="absolute top-1 right-1 w-2 h-2 bg-[#ff9365] rounded-full"></span>
               </button>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-ora[#ff9365] rounded-full flex items-center justify-center">
+                <button
+                  onClick={() => handlePageChange("perfil")}
+                  className="w-10 h-10 bg-[#ff9365] rounded-full flex items-center justify-center hover:ring-2 hover:ring-[#fa7942] transition-all cursor-pointer"
+                  title="Ir a mi perfil"
+                >
                   <User className="w-6 h-6" />
-                </div>
+                </button>
                 <div className="hidden md:block">
                   <p className="text-sm font-medium">Usuario</p>
                   <p className="text-xs text-slate-400">
                     {user?.email || "email@ejemplo.com"}
                   </p>
                 </div>
-                <div><button
-                    onClick={() => logout()}
+                <div>
+                  <button
+                    onClick={handleLogout}
                     className="cursor-pointer  px-4 py-2 bg-[#fa7942] rounded-lg hover:bg-[#ff9365] "
                   >
                     Logout
-                  </button></div>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </header>
 
         {/* Dynamic Content */}
-        <div className="p-6">{renderContent()}</div>
+        <div className={`p-6 transition-opacity duration-150 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
+          {renderContent()}
+        </div>
       </main>
+
+      {showModal && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-[#171d26] rounded-lg border border-slate-700 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            {/* Header del Modal */}
+            <div className="flex items-center justify-between p-6 border-b border-slate-700 sticky top-0 bg-[#171d26] z-10">
+              <h2 className="text-2xl font-bold text-white">Nueva Subasta</h2>
+              <button
+                onClick={handleCloseModal}
+                className="p-2 hover:bg-slate-700 rounded-lg transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Formulario */}
+            <div className="p-6">
+                <ProductFormPage onClose={handleCloseModal} />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 // Componente de Inicio
-function InicioContent() {
+function InicioContent({ onOpenModal, refreshKey }) { 
   return (
     <>
+      <main className=" px-8 py-4 w-full">
+        {/* Sección de Bienvenida*/}
+        <div className="mb-8 flex items-center justify-around">
+          <div className="flex justify-between w-full">
+            <div>
+              <h2 className="text-3xl font-bold text-foreground">
+                Panel de Vendedor
+              </h2>
+              <p className="text-muted-foreground mt-1">
+                Gestiona tus subastas y ventas
+              </p>
+            </div>
+            <div>
+              <button 
+                onClick={onOpenModal} 
+                className="bg-[#fa7942] flex px-4 py-2 rounded-lg font-semibold cursor-pointer hover:bg-[#ff9365] transition-colors"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                  />
+                </svg>
+                Nueva Subasta
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-2 gap-6 mb-6">
-        <div className="bg-[#171d26] rounded-lg p-6 border border-slate-700">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-slate-400 text-sm font-medium">
-              Subastas Activas
-            </h3>
-            <Gavel className="w-5 h-5 text-[#ff9365]" />
+       <div className=" py-4 px-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Card 1 - Ganancias potenciales */}
+          <div className="bg-[#171d26] rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <p className="text-gray-500 text-sm font-medium mb-2">
+                  Ganancias potenciales
+                </p>
+                <h3 className="text-4xl font-bold text-white">
+                  $6145
+                </h3>
+              </div>
+              <div className="bg-[#13171f] p-3 rounded-xl">
+                <DollarSign className="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+            <p className="text-sm text-gray-500">
+              <span className="text-green-600 font-medium">+12%</span> vs. mes anterior
+            </p>
           </div>
-          <p className="text-3xl font-bold">24</p>
-          <p className="text-xs text-green-400 mt-2">↑ 12% vs mes anterior</p>
-        </div>
 
-        <div className="bg-[#171d26] rounded-lg p-6 border border-slate-700">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-slate-400 text-sm font-medium">Mis Pujas</h3>
-            <Clock className="w-5 h-5 text-[#fa7942]" />
+          {/* Card 2 - Subastas activas */}
+          <div className="bg-[#171d26] rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <p className="text-gray-500 text-sm font-medium mb-2">
+                  Subastas activas
+                </p>
+                <h3 className="text-4xl font-bold text-white">
+                  5
+                </h3>
+              </div>
+              <div className="bg-[#13171f] p-3 rounded-xl">
+                <Package className="w-6 h-6 text-yellow-600" />
+              </div>
+            </div>
+            <p className="text-sm text-gray-500">
+              2 terminan pronto
+            </p>
           </div>
-          <p className="text-3xl font-bold">8</p>
-          <p className="text-xs text-slate-400 mt-2">En progreso</p>
-        </div>
 
-        <div className="bg-[#171d26] rounded-lg p-6 border border-slate-700">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-slate-400 text-sm font-medium">Ganadas</h3>
-            <Trophy className="w-5 h-5 text-[#fa7942]" />
+          {/* Card 3 - Total de ofertas */}
+          <div className="bg-[#171d26] rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <p className="text-gray-500 text-sm font-medium mb-2">
+                  Total de ofertas
+                </p>
+                <h3 className="text-4xl font-bold text-white">
+                  112
+                </h3>
+              </div>
+              <div className="bg-[#13171f] p-3 rounded-xl">
+                <TrendingUp className="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+            <p className="text-sm text-gray-500">
+              <span className="text-blue-600 font-medium">+23</span> hoy
+            </p>
           </div>
-          <p className="text-3xl font-bold">3</p>
-          <p className="text-xs text-yellow-400 mt-2">Este mes</p>
-        </div>
-
-        <div className="bg-[#171d26] rounded-lg p-6 border border-slate-700">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-slate-400 text-sm font-medium">
-              Total Invertido
-            </h3>
-            <span className="text-[#fa7942] text-xl">$</span>
-          </div>
-          <p className="text-3xl font-bold">$2,450</p>
-          <p className="text-xs text-slate-400 mt-2">USD</p>
         </div>
       </div>
-
+    </div>
+      <div>
+        <ProductsPage key={refreshKey} onRefresh={refreshKey} />
+      </div>
     </>
   );
 }
-

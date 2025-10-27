@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import Swal from 'sweetalert2';
 
 function RegisterPage() {
   const navigate = useNavigate();
@@ -16,6 +17,10 @@ function RegisterPage() {
   const irLogin = () => {
     navigate("/login");
   };
+
+  const { user } = useAuth();
+
+  
 
   const {
     register,
@@ -37,9 +42,44 @@ function RegisterPage() {
     clearErrors,
   } = useAuth();
 
-  useEffect(() => {
-    if (isAuthenticated) navigate("/dashboard");
-  });
+ useEffect(() => {
+     if (isAuthenticated && user) {
+       console.log("Usuario autenticado:", user);
+       
+       // Mostrar mensaje de éxito antes de redirigir
+       Swal.fire({
+         title: '¡Registro Exitoso!',
+         color: '#fff',
+         html: `
+           <div class="text-center text-white">
+             <p class="text-lg mb-2 text-white">Bienvenido a SubastasNaPa</p>
+             <p class="text-white">${user.email}</p>
+           </div>
+         `,
+         icon: 'success',
+          background: '#171d26',
+         confirmButtonColor: '#fa7942',
+         confirmButtonText: 'Continuar',
+         timer: 3000,
+         timerProgressBar: true
+       }).then(() => {
+         // Redirigir según el userType después de cerrar el modal
+         switch (user.userType) {
+           case "vendedor":
+           case "Vendedor":
+             navigate("/dashboardvendedor");
+             break;
+           case "comprador":
+           case "Comprador":
+             navigate("/dashboardcomprador");
+             break;
+           default:
+             navigate("/dashboardvendedor");
+         }
+       });
+     }
+   }, [isAuthenticated, user, navigate]);
+ 
   
 
   const onSubmit = handleSubmit(async (values) => {
