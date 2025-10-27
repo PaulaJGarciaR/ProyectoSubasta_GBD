@@ -1,33 +1,201 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Menu,
-  Home,
   Gavel,
-  Clock,
-  Trophy,
   User,
   Bell,
   Search,
   X,
+  ChevronRight,
+  TrendingUp,
+  Clock,
+  Calendar,
+  Eye,
+  Loader2,
+  DollarSign,
+  MapPin,
+  Tag,
+  AlertCircle,
 } from "lucide-react";
-
 import UserProfile from "../pages/UserProfile";
 import { useAuth } from "../context/AuthContext";
-import { Eye, Trash2, Edit,  DollarSign, Calendar } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useProducts } from "../context/ProductContext";
+import Swal from 'sweetalert2';
 
-import { Package,  Box, Plus } from 'lucide-react';
+var moneda = "COP";
 
+const productsList = [
+  {
+    id: 1,
+    name: "Ford Mustang GT",
+    year: 2020,
+    category: "autos",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbL0hrXKgU9P68VjfrE8IwHciIvkZKSKi38w&s",
+    currentBid: 200000000,
+    moneda,
+    endDate: "2025-10-15",
+    endTime: "18:00",
+    status: "Activa",
+    features: [
+      "Motor V8 5.0L Coyote",
+      "450 HP de potencia",
+      "Sistema SYNC 3",
+      "Performance Package incluido",
+    ],
+    location: "Subasta Premium Colombia",
+    description:
+      "Muscle car americano con motor V8, perfecto para amantes de la velocidad y el estilo clásico americano con tecnología moderna.",
+    mechanicalAssistance: "Asistencia de la mecánica",
+    baseLocation:
+      "Base Multicarrural: Subasta Premium Colombia • Pujado al día",
+  },
+  {
+    id: 2,
+    name: "Laptop Gaming Pro",
+    year: 2024,
+    category: "tecnologia",
+    image:
+      "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800&q=80",
+    currentBid: 3000000,
+    moneda,
+    endDate: "2025-10-12",
+    endTime: "20:00",
+    status: "Por finalizar",
+    features: ["Intel Core i9", "32GB RAM", "RTX 4080", "Pantalla 165Hz"],
+    location: "Subasta Tech Online",
+    description:
+      "Laptop gaming de alta gama para profesionales y gamers exigentes.",
+  },
+  {
+    id: 3,
+    name: "Pintura Original Contemporánea",
+    year: 2023,
+    category: "arte",
+    image:
+      "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&q=80",
+    currentBid: 1250000,
+    moneda,
+    endDate: "2025-10-18",
+    endTime: "16:00",
+    status: "Activa",
+    features: [
+      "Óleo sobre lienzo",
+      "120 x 90 cm",
+      "Certificado de autenticidad",
+      "Marco incluido",
+    ],
+    location: "Galería Nacional",
+    description:
+      "Obra de arte contemporánea única, perfecta para coleccionistas.",
+  },
+  {
+    id: 4,
+    name: "Reloj de Lujo Suizo",
+    year: 2022,
+    category: "joyeria",
+    image:
+      "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=800&q=80",
+    currentBid: 400000,
+    moneda,
+    endDate: "2025-10-20",
+    endTime: "22:00",
+    status: "Activa",
+    features: [
+      "Acero inoxidable",
+      "Movimiento automático",
+      "Resistente al agua 300m",
+      "Caja original",
+    ],
+    location: "Subasta Premium Luxury",
+    description:
+      "Reloj de lujo suizo con acabados premium y mecanismo de alta precisión.",
+  },
+  {
+    id: 5,
+    name: "Tesla Model 3",
+    year: 2023,
+    category: "autos",
+    image:
+      "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=800&q=80",
+    currentBid: 10000000,
+    moneda,
+    endDate: "2025-10-22",
+    endTime: "14:00",
+    status: "Próxima",
+    features: [
+      "Motor eléctrico",
+      "Autopilot incluido",
+      "Batería de largo alcance",
+      "Carga rápida",
+    ],
+    location: "Subasta Premium Autos",
+    description:
+      "Vehículo eléctrico de última generación con tecnología avanzada.",
+  },
+  {
+    id: 6,
+    name: "Smartphone Pro Max",
+    year: 2024,
+    category: "tecnologia",
+    image:
+      "https://www.clevercel.co/cdn/shop/files/Portadas_iPhone14ProMax.webp?v=1757093052",
+    currentBid: 500000,
+    moneda,
+    endDate: "2025-10-16",
+    endTime: "18:00",
+    status: "Activa",
+    features: ["Pantalla OLED", "256GB", "5G", "Triple cámara"],
+    location: "Subasta Tech",
+    description:
+      "Smartphone de última generación con las mejores prestaciones.",
+  },
+];
 
-
-export default function DashboardComprador() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+function DashboardComprador() {
+  const { logout, user } = useAuth();
   const [currentPage, setCurrentPage] = useState("inicio");
-  const { logout,user} = useAuth();
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
-  const handleNavigation = (page) => {
-    setCurrentPage(page);
-    setSidebarOpen(false);
+  const handlePageChange = (newPage) => {
+    if (newPage === currentPage) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentPage(newPage);
+      setIsTransitioning(false);
+    }, 150);
+  };
+
+  const handleLogout = async () => {
+    const result = await Swal.fire({
+      title: "¿Cerrar sesión?",
+      text: "¿Estás seguro que deseas salir de tu cuenta?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#fa7942",
+      cancelButtonColor: "#64748b",
+      confirmButtonText: "Sí, cerrar sesión",
+      cancelButtonText: "Cancelar",
+      background: "#171d26",
+      color: "#f7f9fb",
+      customClass: {
+        popup: "border border-slate-700",
+      },
+    });
+
+    if (result.isConfirmed) {
+      await Swal.fire({
+        title: "¡Hasta pronto!",
+        text: "Has cerrado sesión exitosamente",
+        icon: "success",
+        confirmButtonColor: "#fa7942",
+        background: "#171d26",
+        color: "#f7f9fb",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+      logout();
+    }
   };
 
   const renderContent = () => {
@@ -42,74 +210,35 @@ export default function DashboardComprador() {
   };
 
   return (
-    <div className="flex h-screen bg-[#13171f] text-white">
-      {/* Sidebar */}
-      <aside
-        className={`${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } fixed inset-y-0 left-0 z-50 w-64 bg-[#171d26] transition-transform duration-300 lg:translate-x-0 lg:static lg:inset-0`}
-      >
-        <div className="flex items-center justify-between p-6 border-b border-slate-700">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[#fa7942] rounded-lg flex items-center justify-center">
-              <Gavel className="w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-[#fa7942]">
-                SubastasNaPa
-              </h1>
-              <p className="text-xs text-slate-400">
-                Tu casa de subastas digital
-              </p>
-            </div>
-          </div>
-          <button onClick={() => setSidebarOpen(false)} className="lg:hidden">
-            <X className="w-6 h-6" />
-          </button>
-        </div>
-
-        <nav className="p-4 space-y-2">
-          <button
-            onClick={() => handleNavigation("inicio")}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-              currentPage === "inicio" ? "bg-[#fa7942]" : "hover:bg-slate-700"
-            }`}
-          >
-            <Home className="w-5 h-5" />
-            <span className="font-medium">Inicio</span>
-          </button>
-
-         
-          <button
-            onClick={() => handleNavigation("perfil")}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-              currentPage === "perfil" ? "bg-[#fa7942]" : "hover:bg-slate-700"
-            }`}
-          >
-            <User className="w-5 h-5" />
-            <span>Mi Perfil</span>
-          </button>
-
-        </nav>
-      </aside>
-
-      {/* Overlay para móvil */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
+    <div className="flex flex-col h-screen bg-[#13171f] text-white">
+      <main className="flex-1 overflow-y-auto pt-[75px]">
         {/* Header */}
-        <header className="border-b border-slate-700 p-4">
+        <header className="fixed top-0 left-0 right-0 bg-[#171d26] border-b border-slate-700 p-4 z-30">
           <div className="flex items-center justify-between">
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 hover:bg-slate-700 rounded-lg"
-            >
+            <div className="flex items-center justify-between border-slate-700">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-[#fa7942] rounded-lg flex items-center justify-center">
+                  <button
+                    className="cursor-pointer"
+                    onClick={() => handlePageChange("inicio")}
+                  >
+                    <Gavel className="w-6 h-6" />
+                  </button>
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-[#fa7942]">
+                    SubastasNaPa
+                  </h1>
+                  <p className="text-xs text-slate-400">
+                    Tu casa de subastas digital
+                  </p>
+                </div>
+              </div>
+              <button className="lg:hidden">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <button className="lg:hidden p-2 hover:bg-slate-700 rounded-lg">
               <Menu className="w-6 h-6" />
             </button>
 
@@ -127,216 +256,671 @@ export default function DashboardComprador() {
             <div className="flex items-center gap-4">
               <button className="relative p-2 hover:bg-slate-700 rounded-lg">
                 <Bell className="w-6 h-6" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-ora[#ff9365] rounded-full"></span>
+                <span className="absolute top-1 right-1 w-2 h-2 bg-[#ff9365] rounded-full"></span>
               </button>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-ora[#ff9365] rounded-full flex items-center justify-center">
+                <button
+                  onClick={() => handlePageChange("perfil")}
+                  className="w-10 h-10 bg-[#ff9365] rounded-full flex items-center justify-center hover:ring-2 hover:ring-[#fa7942] transition-all cursor-pointer"
+                  title="Ir a mi perfil"
+                >
                   <User className="w-6 h-6" />
-                </div>
+                </button>
                 <div className="hidden md:block">
                   <p className="text-sm font-medium">Usuario</p>
                   <p className="text-xs text-slate-400">
                     {user?.email || "email@ejemplo.com"}
                   </p>
                 </div>
-                <div><button
-                    onClick={() => logout()}
-                    className="cursor-pointer  px-4 py-2 bg-[#fa7942] rounded-lg hover:bg-[#ff9365] "
+                <div>
+                  <button
+                    onClick={handleLogout}
+                    className="cursor-pointer px-4 py-2 bg-[#fa7942] rounded-lg hover:bg-[#ff9365]"
                   >
                     Logout
-                  </button></div>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </header>
-
+        
         {/* Dynamic Content */}
-        <div className="p-6">{renderContent()}</div>
+        <div
+          className={`flex-1 overflow-y-auto transition-opacity duration-150 ${
+            isTransitioning ? "opacity-0" : "opacity-100"
+          }`}
+        >
+          {renderContent()}
+        </div>
       </main>
     </div>
   );
 }
 
+// Componente de Inicio con datos del ProductContext
 function InicioContent() {
+  const [currentSlide] = useState(0);
+  const { products, getProducts } = useProducts();
+  const [imageIndex, setImageIndex] = useState(0);
+  const [localLoading, setLocalLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [bidAmount, setBidAmount] = useState('');
+
+  const heroImages = [
+    "https://wallpapers.com/images/hd/sunset-black-ford-mustang-gt-s7wq5lfz762uptye.jpg",
+    "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=1200&q=80",
+    "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1200&q=80",
+  ];
+
+  const featuredProduct = productsList[currentSlide];
+
+  // Cargar productos al montar el componente
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadProducts = async () => {
+      try {
+        if (!isMounted) return;
+        
+        setLocalLoading(true);
+
+        const result = await getProducts();
+        
+        if (!isMounted) return;
+        
+        if (!result || result.length === 0) {
+          Swal.fire({
+            title: 'Sin productos',
+            text: 'No hay productos en la base de datos o no se pudieron cargar.',
+            icon: 'info',
+            confirmButtonColor: '#fa7942',
+            background: '#171d26',
+            color: '#f7f9fb',
+          });
+        }
+      } catch (error) {
+        if (!isMounted) return;
+        
+        let errorMessage = 'No se pudieron cargar los productos.';
+        
+        if (error.message === 'Network Error') {
+          errorMessage = 'No se puede conectar al backend. Verifica que esté corriendo en http://localhost:4000';
+        } else if (error.response) {
+          errorMessage = `Error del servidor: ${error.response.status} - ${error.response.statusText}`;
+        }
+        
+        Swal.fire({
+          title: 'Error',
+          text: errorMessage,
+          icon: 'error',
+          confirmButtonColor: '#fa7942',
+          background: '#171d26',
+          color: '#f7f9fb',
+        });
+      } finally {
+        if (isMounted) {
+          setLocalLoading(false);
+        }
+      }
+    };
+
+    loadProducts();
+    
+    return () => {
+      isMounted = false;
+    };
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Carrusel automático
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setImageIndex((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
+
+  // Función helper para obtener el nombre del producto (maneja ambos formatos)
+  const getProductName = (product) => {
+    return product.title || product.nombre || product.name || "Sin título";
+  };
+
+  // Función helper para obtener la descripción
+  const getProductDescription = (product) => {
+    return product.description || product.descripcion || "Sin descripción";
+  };
+
+  // Función helper para obtener la imagen
+  const getProductImage = (product) => {
+    return product.image || product.imagen || product.imageUrl || 'https://via.placeholder.com/400x300?text=Sin+Imagen';
+  };
+
+  // Función helper para obtener el precio
+  const getProductPrice = (product) => {
+    return product.startingPrice || product.precioInicial || product.precioActual || product.currentBid || 0;
+  };
+
+  // Función helper para obtener la fecha de fin
+  const getProductEndDate = (product) => {
+    if (product.dateEnd) {
+      return new Date(product.dateEnd).toLocaleDateString('es-ES');
+    }
+    return product.fechaFin || product.endDate || "Por definir";
+  };
+
+  // Función helper para obtener ubicación
+  const getProductLocation = (product) => {
+    return product.location || product.ubicacion || "Ubicación no especificada";
+  };
+
+  // Función helper para obtener características
+  const getProductFeatures = (product) => {
+    return product.features || product.caracteristicas || [];
+  };
+
+  const calculateTimeLeft = (product) => {
+    let endDate;
+    
+    if (product.dateEnd) {
+      endDate = new Date(product.dateEnd);
+    } 
+    else if (product.fechaFin) {
+      const endTime = product.horaFin || product.endTime || "23:59";
+      endDate = new Date(`${product.fechaFin} ${endTime}`);
+    } 
+    else {
+      return "Por definir";
+    }
+
+    const now = new Date();
+    const diff = endDate - now;
+
+    if (diff <= 0) return "Finalizada";
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+    if (days > 0) return `${days}d ${hours}h ${minutes}m`;
+    if (hours > 0) return `${hours}h ${minutes}m`;
+    return `${minutes}m`;
+  };
+
+  const handleRefresh = async () => {
+    try {
+      setLocalLoading(true);
+      await getProducts();
+      Swal.fire({
+        title: '¡Actualizado!',
+        text: 'Productos actualizados correctamente',
+        icon: 'success',
+        confirmButtonColor: '#fa7942',
+        background: '#171d26',
+        color: '#f7f9fb',
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error('Error al actualizar:', error);
+    } finally {
+      setLocalLoading(false);
+    }
+  };
+
+  const handleViewDetails = (product) => {
+    setSelectedProduct(product);
+    setBidAmount('');
+  };
+
+  const handleCloseModal = () => {
+    setSelectedProduct(null);
+    setBidAmount('');
+  };
+
+  const handlePlaceBid = async () => {
+    if (!bidAmount || isNaN(bidAmount)) {
+      Swal.fire({
+        title: 'Error',
+        text: 'Por favor ingresa un monto válido',
+        icon: 'error',
+        confirmButtonColor: '#fa7942',
+        background: '#171d26',
+        color: '#f7f9fb',
+      });
+      return;
+    }
+
+    const currentPrice = getProductPrice(selectedProduct);
+    const bidValue = parseFloat(bidAmount);
+    const minimumBid = currentPrice * 1.05; // 5% más que el precio actual
+
+    if (bidValue <= currentPrice) {
+      Swal.fire({
+        title: 'Puja muy baja',
+        text: `Tu puja debe ser mayor al precio actual de $${currentPrice.toLocaleString()}`,
+        icon: 'warning',
+        confirmButtonColor: '#fa7942',
+        background: '#171d26',
+        color: '#f7f9fb',
+      });
+      return;
+    }
+
+    if (bidValue < minimumBid) {
+      const result = await Swal.fire({
+        title: 'Puja recomendada',
+        html: `
+          <p>Tu puja de <strong>$${bidValue.toLocaleString()}</strong> es válida pero baja.</p>
+          <p>Se recomienda pujar al menos <strong>$${minimumBid.toLocaleString()}</strong> (5% más).</p>
+          <p>¿Deseas continuar con tu puja actual?</p>
+        `,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#fa7942',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Sí, pujar',
+        cancelButtonText: 'Cancelar',
+        background: '#171d26',
+        color: '#f7f9fb',
+      });
+
+      if (!result.isConfirmed) return;
+    }
+
+    // Aquí iría la lógica para enviar la puja al backend
+    try {
+      // TODO: Implementar llamada al API
+      // await createBid(selectedProduct._id, bidValue);
+      
+      await Swal.fire({
+        title: '¡Puja registrada!',
+        html: `
+          <p>Has pujado <strong>$${bidValue.toLocaleString()}</strong></p>
+          <p>por <strong>${getProductName(selectedProduct)}</strong></p>
+        `,
+        icon: 'success',
+        confirmButtonColor: '#fa7942',
+        background: '#171d26',
+        color: '#f7f9fb',
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      
+      handleCloseModal();
+      await getProducts(); // Actualizar lista de productos
+      
+    } catch (error) {
+      console.log(error)
+      Swal.fire({
+        title: 'Error',
+        text: 'No se pudo registrar la puja. Inténtalo de nuevo.',
+        icon: 'error',
+        confirmButtonColor: '#fa7942',
+        background: '#171d26',
+        color: '#f7f9fb',
+      });
+    }
+  };
+
   return (
-    <>
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        <div className="bg-[#171d26] rounded-lg p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-slate-400 text-sm font-medium">
-              Subastas Activas
+    <div className="min-h-screen bg-[#0F1F29]">
+      {/* Hero Section with Carousel */}
+      <section className="relative h-[600px] overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src={heroImages[imageIndex]}
+            alt="Hero"
+            className="w-full h-full object-cover transition-opacity duration-1000"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent"></div>
+        </div>
+
+        <div className="relative container mx-auto px-4 h-full flex items-center">
+          <div className="max-w-2xl">
+            <div className="inline-block px-4 py-1 bg-orange-500/20 border border-orange-500 rounded-full text-orange-400 text-sm mb-4">
+              Subasta Destacada
+            </div>
+            <h2 className="text-5xl md:text-6xl font-bold text-white mb-4">
+              {featuredProduct.name}{" "}
+              <span className="text-[#FF6F3C]">{featuredProduct.year}</span>
+            </h2>
+            <p className="text-xl text-gray-300 mb-6">
+              {featuredProduct.description}
+            </p>
+
+            <button className="px-8 py-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg text-white font-semibold hover:from-orange-600 hover:to-red-600 transition-all inline-flex items-center gap-2">
+              Características Principales
+              <ChevronRight size={20} />
+            </button>
+
+            <div className="mt-8 space-y-2 text-gray-300">
+              <p className="text-sm">
+                {featuredProduct.mechanicalAssistance ||
+                  "Inspección disponible"}
+              </p>
+              <p className="text-sm">
+                {featuredProduct.baseLocation || featuredProduct.location}
+              </p>
+            </div>
+
+            <div className="mt-4 text-xs text-gray-400">
+              Imagen {imageIndex + 1} de {heroImages.length}
+            </div>
+          </div>
+        </div>
+
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2">
+          {heroImages.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setImageIndex(idx)}
+              className={`w-2 h-2 rounded-full transition-all ${
+                idx === imageIndex ? "bg-white w-8" : "bg-white/50"
+              }`}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* Products Grid */}
+      <section className="py-8 md:py-16 bg-[#13171f] min-h-screen">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="text-2xl md:text-3xl font-bold text-white">
+              Subastas Disponibles{" "}
+              <span className="text-[#FF6F3C]">
+                ({products.length})
+              </span>
             </h3>
-            <Gavel className="w-5 h-5 text-[#fa7942]" />
-          </div>
-          <p className="text-3xl font-bold">24</p>
-          <p className="text-xs text-green-400 mt-2">↑ 12% vs mes anterior</p>
-        </div>
-
-        <div className="bg-[#171d26] rounded-lg p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-slate-400 text-sm font-medium">Mis Pujas</h3>
-            <Clock className="w-5 h-5 text-[#fa7942]" />
-          </div>
-          <p className="text-3xl font-bold">8</p>
-          <p className="text-xs text-slate-400 mt-2">En progreso</p>
-        </div>
-
-        <div className="bg-[#171d26] rounded-lg p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-slate-400 text-sm font-medium">Ganadas</h3>
-            <Trophy className="w-5 h-5 text-[#fa7942]" />
-          </div>
-          <p className="text-3xl font-bold">3</p>
-          <p className="text-xs text-yellow-400 mt-2">Este mes</p>
-        </div>
-
-        <div className="bg-[#171d26] rounded-lg p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-slate-400 text-sm font-medium">
-              Total Invertido
-            </h3>
-            <span className="text-[#fa7942] text-xl">$</span>
-          </div>
-          <p className="text-3xl font-bold">$2,450</p>
-          <p className="text-xs text-slate-400 mt-2">USD</p>
-        </div>
-      </div>
-
-      {/* Subastas Destacadas */}
-      <div className="bg-[#171d26] rounded-lg p-6 mb-6">
-        <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-          <Gavel className="w-6 h-6 text-[#fa7942]" />
-          Subastas Destacadas
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div
-          
-              className="bg-[#334155] rounded-lg overflow-hidden hover:ring-2 hover:ring-[#fa7942] transition-all cursor-pointer"
+            <button
+              onClick={handleRefresh}
+              disabled={localLoading}
+              className="px-4 py-2 bg-[#fa7942] rounded-lg hover:bg-[#ff9365] transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
-              <div className=" bg-slate-600 flex items-center justify-center">
-                <div className="h-72 w-full overflow-hidden">
-                  <img className="overflow-hidden" src="https://lamparasilumeco.com/wp-content/uploads/2024/07/3299-A-1772-3-3.jpg" alt="" />
+              {localLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Actualizando...
+                </>
+              ) : (
+                "Actualizar"
+              )}
+            </button>
+          </div>
 
+          {/* Estado de carga */}
+          {localLoading && (
+            <div className="flex flex-col justify-center items-center py-20">
+              <Loader2 className="w-12 h-12 text-[#fa7942] animate-spin mb-4" />
+              <p className="text-gray-400">Cargando productos desde MongoDB...</p>
+            </div>
+          )}
+
+          {/* Sin productos */}
+          {!localLoading && products.length === 0 && (
+            <div className="text-center py-20">
+              <div className="mb-4">
+                <Gavel className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+              </div>
+              <p className="text-gray-400 text-lg mb-2">
+                No hay productos disponibles en este momento
+              </p>
+              <p className="text-gray-500 text-sm mb-4">
+                Verifica tu conexión con el backend y MongoDB
+              </p>
+              <button
+                onClick={handleRefresh}
+                className="px-6 py-2 bg-[#fa7942] rounded-lg hover:bg-[#ff9365] transition-colors"
+              >
+                Reintentar
+              </button>
+            </div>
+          )}
+
+          {/* Grid de productos del BACKEND */}
+          {!localLoading && products.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {products.map((product) => (
+                <div
+                  key={product._id}
+                  className="group bg-[#1a2332] rounded-xl overflow-hidden hover:shadow-lg hover:shadow-blue-900/20 transition-all duration-300 border border-gray-800/30 hover:border-blue-500/30 hover:-translate-y-1"
+                >
+                  {/* Imagen */}
+                  <div className="relative overflow-hidden">
+                    <img
+                      src={getProductImage(product)}
+                      alt={getProductName(product)}
+                      className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        e.target.src = 'https://via.placeholder.com/400x300?text=Sin+Imagen';
+                      }}
+                    />
+                    
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1a2332]/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    <div className="absolute top-4 left-4 px-3 py-1.5 rounded-lg bg-blue-500/90 backdrop-blur-sm">
+                      <span className="text-white text-xs font-semibold">
+                        {product.estado || product.status || "Activa"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Contenido */}
+                  <div className="p-6 space-y-4">
+                    <h4 className="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors line-clamp-1">
+                      {getProductName(product)}
+                    </h4>
+
+                    <p className="text-gray-400 text-sm leading-relaxed line-clamp-2">
+                      {getProductDescription(product)}
+                    </p>
+
+                    <div className="pt-2">
+                      <div className="flex items-center gap-1.5 text-gray-500 text-xs mb-1.5">
+                        <TrendingUp size={14} className="text-green-500" />
+                        <span>Precio actual</span>
+                      </div>
+                      
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-3xl font-bold text-white">
+                          ${getProductPrice(product).toLocaleString()}
+                        </span>
+                        <span className="text-lg font-medium text-gray-400">
+                          {product.moneda || "COP"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2.5 pt-3 border-t border-gray-800/50">
+                      <div className="flex items-center gap-2.5 text-gray-300 text-sm">
+                        <div className="p-1 bg-orange-500/10 rounded">
+                          <Clock size={16} className="text-orange-400" />
+                        </div>
+                        <span>{calculateTimeLeft(product)}</span>
+                      </div>
+                      
+                      <div className="flex items-center gap-2.5 text-gray-300 text-sm">
+                        <div className="p-1 bg-blue-500/10 rounded">
+                          <Calendar size={16} className="text-blue-400" />
+                        </div>
+                        <span>{getProductEndDate(product)}</span>
+                      </div>
+                    </div>
+
+                    <button 
+                      onClick={() => handleViewDetails(product)}
+                      className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 rounded-lg text-white font-semibold transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+                    >
+                      <Eye size={18} />
+                      Ver Subasta
+                    </button>
+                  </div>
                 </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Modal de Detalles del Producto (DATOS DEL BACKEND) */}
+      {selectedProduct && (
+        <div className="fixed inset-0 bg-black/80 h-screen flex items-center justify-center p-4 overflow-y-auto  z-[60]">
+          <div className="bg-[#1a2332] rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-gray-800/50 shadow-2xl">
+            {/* Header del Modal */}
+            <div className="relative">
+              <img
+                src={getProductImage(selectedProduct)}
+                alt={getProductName(selectedProduct)}
+                className="w-full h-80 object-cover rounded-t-2xl"
+                onError={(e) => {
+                  e.target.src = 'https://via.placeholder.com/800x400?text=Sin+Imagen';
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1a2332] via-transparent to-transparent rounded-t-2xl" />
               
+              <button
+                onClick={handleCloseModal}
+                className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 rounded-full transition-colors backdrop-blur-sm"
+              >
+                <X size={24} className="text-white" />
+              </button>
+
+              <div className="absolute bottom-4 left-6">
+                <div className="inline-block px-3 py-1.5 rounded-lg bg-blue-500/90 backdrop-blur-sm mb-2">
+                  <span className="text-white text-sm font-semibold">
+                    {selectedProduct.estado || selectedProduct.status || "Activa"}
+                  </span>
+                </div>
               </div>
-              <div className="p-4">
-                <h3 className="font-semibold mb-2">
-                  LÁMPARA COLGANTE TRITONY
-                </h3>
-                <p className="text-sm text-slate-400 mb-3">
-                  La lámpara colgante TRITONY está fabricada con una pantalla de alambre que ofrece un aspecto especial gracias a su forma en forma de canasta.
+            </div>
+
+            {/* Contenido del Modal */}
+            <div className="p-8 space-y-6">
+              {/* Título y Descripción */}
+              <div>
+                <h2 className="text-3xl font-bold text-white mb-3">
+                  {getProductName(selectedProduct)}
+                </h2>
+                <p className="text-gray-400 text-lg leading-relaxed">
+                  {getProductDescription(selectedProduct)}
                 </p>
-                <div className="flex items-center justify-between">
+              </div>
+
+              {/* Grid de Información */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Precio Actual */}
+                <div className="bg-[#13171f] p-6 rounded-xl border border-gray-800/50">
+                  <div className="flex items-center gap-2 text-gray-400 mb-3">
+                    <TrendingUp size={20} className="text-green-500" />
+                    <span className="text-sm font-medium">Precio Actual</span>
+                  </div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-4xl font-bold text-white">
+                      ${getProductPrice(selectedProduct).toLocaleString()}
+                    </span>
+                    <span className="text-xl font-medium text-gray-400">
+                      {selectedProduct.moneda || "COP"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Tiempo Restante */}
+                <div className="bg-[#13171f] p-6 rounded-xl border border-gray-800/50">
+                  <div className="flex items-center gap-2 text-gray-400 mb-3">
+                    <Clock size={20} className="text-orange-500" />
+                    <span className="text-sm font-medium">Tiempo Restante</span>
+                  </div>
+                  <div className="text-3xl font-bold text-white">
+                    {calculateTimeLeft(selectedProduct)}
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-400 text-sm mt-2">
+                    <Calendar size={16} />
+                    <span>Finaliza: {getProductEndDate(selectedProduct)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Características adicionales */}
+              {getProductFeatures(selectedProduct).length > 0 && (
+                <div className="bg-[#13171f] p-6 rounded-xl border border-gray-800/50">
+                  <div className="flex items-center gap-2 text-white mb-4">
+                    <Tag size={20} className="text-blue-500" />
+                    <span className="text-lg font-semibold">Características</span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {getProductFeatures(selectedProduct).map((feature, index) => (
+                      <div key={index} className="flex items-start gap-2">
+                        <ChevronRight size={16} className="text-blue-500 mt-1 flex-shrink-0" />
+                        <span className="text-gray-300 text-sm">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Ubicación */}
+              <div className="flex items-center gap-3 text-gray-300 bg-[#13171f] p-4 rounded-xl border border-gray-800/50">
+                <MapPin size={20} className="text-red-500" />
+                <span>{getProductLocation(selectedProduct)}</span>
+              </div>
+
+              {/* Sección de Puja */}
+              <div className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 p-6 rounded-xl border border-blue-500/30">
+                <div className="flex items-center gap-2 text-white mb-4">
+                  <DollarSign size={24} className="text-green-500" />
+                  <span className="text-xl font-bold">Realizar Puja</span>
+                </div>
+
+                <div className="space-y-4">
                   <div>
-                    <p className="text-xs text-slate-400">Puja Actual</p>
-                    <p className="text-lg font-bold text-[#fa7942]">$500.000</p>
+                    <label className="block text-gray-300 text-sm mb-2">
+                      Monto de tu puja ({selectedProduct.moneda || "COP"})
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
+                        $
+                      </span>
+                      <input
+                        type="number"
+                        value={bidAmount}
+                        onChange={(e) => setBidAmount(e.target.value)}
+                        placeholder={`Mínimo: ${(getProductPrice(selectedProduct) * 1.05).toLocaleString()}`}
+                        className="w-full pl-10 pr-4 py-4 bg-[#13171f] border border-gray-700 rounded-lg text-white text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    </div>
+                    <div className="flex items-start gap-2 mt-2 text-xs text-gray-400">
+                      <AlertCircle size={14} className="mt-0.5 flex-shrink-0" />
+                      <span>
+                        Tu puja debe ser mayor a ${getProductPrice(selectedProduct).toLocaleString()}.
+                        Se recomienda pujar al menos 5% más que el precio actual.
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-xs text-slate-400">Termina en</p>
-                    <p className="text-sm font-semibold">2h 34m</p>
+
+                  <div className="flex gap-3">
+                    <button
+                      onClick={handlePlaceBid}
+                      className="flex-1 py-4 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 rounded-lg text-white font-bold text-lg transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                    >
+                      <Gavel size={20} />
+                      Confirmar Puja
+                    </button>
+                    <button
+                      onClick={handleCloseModal}
+                      className="px-6 py-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-white font-semibold transition-colors"
+                    >
+                      Cancelar
+                    </button>
                   </div>
                 </div>
-                <button className="w-full mt-4 bg-[#fa7942] hover:bg-[#ff9365] py-2 rounded-lg font-medium transition-colors">
-                  Pujar Ahora
-                </button>
               </div>
             </div>
-        </div>
-      </div>
-
-      {/* Actividad Reciente */}
-      <div className="bg-[#171d26] rounded-lg p-6">
-        <h2 className="text-xl font-bold mb-4">Actividad Reciente</h2>
-        <div className="space-y-4">
-            <div
-              className="flex items-center justify-between p-4 bg-[#334155] rounded-lg"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-slate-600 rounded-lg flex items-center justify-center">
-                  <Gavel className="w-6 h-6 text-[#fa7942]" />
-                </div>
-                <div>
-                  <p className="font-medium">Nueva puja en "Artículo"</p>
-                  <p className="text-sm text-slate-400">Hace 1 hora(s)</p>
-                </div>
-              </div>
-              <span className="text-[#fa7942] font-semibold">$550.000</span>
-            </div>
-        </div>
-      </div>
-    </>
-  );
-}
-
-
-
-
-
-// Componente de Mi Perfil
-function PerfilContent() {
-  return (
-    <div className="max-w-4xl mx-auto">
-      <div className="bg-slate-800 rounded-lg border border-slate-700 p-6 mb-6">
-        <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-          <User className="w-7 h-7 text-[#fa7942]" />
-          Mi Perfil
-        </h2>
-        <div className="flex items-center gap-6 mb-6">
-          <div className="w-24 h-24 bg-[#fa7942] rounded-full flex items-center justify-center">
-            <User className="w-12 h-12" />
-          </div>
-          <div className="flex-1">
-            <h3 className="text-xl font-semibold mb-2">Usuario</h3>
-            <p className="text-slate-400 mb-1">pjgarciar1@ufpso.edu.co</p>
-            <p className="text-sm text-slate-500">Miembro desde Enero 2025</p>
-          </div>
-          <button className="bg-[#fa7942]  px-6 py-2 rounded-lg font-medium transition-colors">
-            Editar Perfil
-          </button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
-          <h3 className="text-lg font-semibold mb-4">Estadísticas</h3>
-          <div className="space-y-3">
-            <div className="flex justify-between">
-              <span className="text-slate-400">Pujas Realizadas</span>
-              <span className="font-semibold">45</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Subastas Ganadas</span>
-              <span className="font-semibold">12</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Tasa de Éxito</span>
-              <span className="font-semibold text-green-400">26.7%</span>
-            </div>
           </div>
         </div>
-
-        <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
-          <h3 className="text-lg font-semibold mb-4">
-            Información de Contacto
-          </h3>
-          <div className="space-y-3">
-            <div>
-              <p className="text-slate-400 text-sm">Email</p>
-              <p className="font-medium">Correo Electronico</p>
-            </div>
-            <div>
-              <p className="text-slate-400 text-sm">Teléfono</p>
-              <p className="font-medium">+57 123 456 7890</p>
-            </div>
-            <div>
-              <p className="text-slate-400 text-sm">Ubicación</p>
-              <p className="font-medium">Bogotá, Colombia</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
+
+export default DashboardComprador;

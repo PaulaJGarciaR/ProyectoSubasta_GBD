@@ -15,7 +15,6 @@ function ProductFormPage({ productToEdit, onClose }) {
   const navigate = useNavigate();
   const params = useParams();
 
-  // Función para formatear fecha a string YYYY-MM-DD para el input
   const formatDateForInput = (date) => {
     if (!date) return "";
     const d = new Date(date);
@@ -27,7 +26,6 @@ function ProductFormPage({ productToEdit, onClose }) {
 
   useEffect(() => {
     async function loadProduct() {
-      // ✅ Prioridad 1: Si viene productToEdit del modal
       if (productToEdit) {
         console.log("Cargando desde modal:", productToEdit);
         setValue("title", productToEdit.title);
@@ -37,7 +35,7 @@ function ProductFormPage({ productToEdit, onClose }) {
         setValue("dateStart", formatDateForInput(productToEdit.dateStart));
         setValue("dateEnd", formatDateForInput(productToEdit.dateEnd));
       }
-      // ✅ Prioridad 2: Si viene params.id de la URL
+
       else if (params.id) {
         const product = await getProduct(params.id);
         console.log("Cargando desde URL:", product);
@@ -55,7 +53,6 @@ function ProductFormPage({ productToEdit, onClose }) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      // ✅ Transformar las fechas antes de enviar
        const formattedData = {
       ...data,
       dateStart: (() => {
@@ -70,7 +67,6 @@ function ProductFormPage({ productToEdit, onClose }) {
       })(),
     };
 
-      // ✅ Si viene productToEdit, actualizar ese producto
       if (productToEdit) {
         await updateProduct(productToEdit._id, formattedData);
 
@@ -89,7 +85,6 @@ function ProductFormPage({ productToEdit, onClose }) {
           onClose(); // Cerrar modal
         }
       }
-      // ✅ Si viene params.id, actualizar desde URL
       else if (params.id) {
         await updateProduct(params.id, formattedData);
 
@@ -106,7 +101,7 @@ function ProductFormPage({ productToEdit, onClose }) {
 
         navigate("/dashboardvendedor");
       }
-      // ✅ Si no, crear nuevo producto
+      
       else {
         await createProduct(formattedData);
 
@@ -141,7 +136,6 @@ function ProductFormPage({ productToEdit, onClose }) {
     }
   });
 
-  // ✅ Si se usa en modal, no mostrar el wrapper completo
   const isModal = !!productToEdit || !!onClose;
 
   if (isModal) {
@@ -273,7 +267,6 @@ function ProductFormPage({ productToEdit, onClose }) {
     );
   }
 
-  // ✅ Vista completa para cuando se usa como página independiente
   return (
     <div className="bg-[#13171f] min-h-screen">
       <div className="bg-[#13171f] min-h-screen flex items-center justify-center p-8">

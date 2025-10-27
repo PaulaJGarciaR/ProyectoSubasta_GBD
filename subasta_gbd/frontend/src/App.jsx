@@ -3,7 +3,6 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import { AuthProvider } from "./context/AuthContext";
-import DashboardPage from "./pages/DashboardPage";
 import ProtectedRoute from "./ProtectedRoute";
 import DashboardVendedor from "./layouts/DashboardVendedor"
 import DashboardComprador from "./layouts/DashboardComprador"
@@ -24,7 +23,6 @@ function App() {
            <Route path="/dashboardvendedor/:id" element={<ProductFormPage />}></Route>
             <Route path="/dashboardvendedor" element={<DashboardVendedor />}></Route>
             <Route path="/dashboardcomprador" element={<DashboardComprador />}></Route>
-            <Route path="/dashboard" element={<DashboardPage />}></Route>
           </Route>
         </Routes>
       </BrowserRouter>

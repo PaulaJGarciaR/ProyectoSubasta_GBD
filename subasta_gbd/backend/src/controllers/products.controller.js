@@ -1,15 +1,37 @@
 import Product from "../models/product.model.js";
 
+// 🛒 MODIFICADO - Para COMPRADORES (todos los productos)
 export const getProducts = async (req, res) => {
   try {
-     const products = await Product.find({
-    user: req.user.id,
-  }).populate("user");
-  res.json(products);
+    console.log('📡 [getProducts] Obteniendo TODOS los productos...');
+    
+    // SIN FILTRO - trae todos los productos
+    const products = await Product.find().populate("user");
+    
+    console.log(`✅ [getProducts] Encontrados ${products.length} productos`);
+    res.json(products);
   } catch (error) {
-     return res.status(500).json({ message: "Something went wrong" });
+    console.error('❌ [getProducts] Error:', error);
+    return res.status(500).json({ message: "Something went wrong" });
   }
- 
+};
+
+// 👤 NUEVO - Para VENDEDORES (solo mis productos)
+export const getMyProducts = async (req, res) => {
+  try {
+    console.log('📡 [getMyProducts] Obteniendo productos del usuario:', req.user.id);
+    
+    // CON FILTRO - solo productos del usuario logueado
+    const products = await Product.find({
+      user: req.user.id,
+    }).populate("user");
+    
+    console.log(`✅ [getMyProducts] Encontrados ${products.length} productos del usuario`);
+    res.json(products);
+  } catch (error) {
+    console.error('❌ [getMyProducts] Error:', error);
+    return res.status(500).json({ message: "Something went wrong" });
+  }
 };
 
 export const createProduct = async (req, res) => {
@@ -59,6 +81,7 @@ export const deleteProduct = async (req, res) => {
     return res.status(404).json({ message: "Product not found" });
   }
 };
+
 export const updateProduct = async (req, res) => {
   try {
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
