@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "react";
 import {
   createProductRequest,
   getProductsRequest,
+  getMyProductsRequest,
   deleteProductRequest,
   getProductRequest,
   updateProductRequest
@@ -23,14 +24,29 @@ export const useProducts = () => {
 export function ProductProvider({ children }) {
   const [products, setProducts] = useState([]);
 
-  const getProducts = async () => {
-    try {
-      const res = await getProductsRequest();
-      setProducts(res.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // Para compradores (todos los productos)
+const getProducts = async () => {
+  try {
+    const res = await getProductsRequest();
+    setProducts(res.data);
+    return res.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+// Para vendedores (solo mis productos)  ← AGREGAR ESTA FUNCIÓN
+const getMyProducts = async () => {
+  try {
+    const res = await getMyProductsRequest();
+    setProducts(res.data);
+    return res.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 
   const createProduct = async (product) => {
     const res = await createProductRequest(product);
@@ -56,6 +72,8 @@ export function ProductProvider({ children }) {
     }
   };
 
+
+
   const updateProduct = async(id,product) => {
     try {
       await updateProductRequest(id,product);
@@ -74,6 +92,7 @@ export function ProductProvider({ children }) {
         products,
         createProduct,
         getProducts,
+         getMyProducts,
         deleteProduct,
         getProduct,
         updateProduct

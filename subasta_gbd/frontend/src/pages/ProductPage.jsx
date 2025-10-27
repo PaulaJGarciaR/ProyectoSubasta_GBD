@@ -1,46 +1,68 @@
 import React, { useEffect, useState } from "react";
 import { useProducts } from "../context/ProductContext";
-import { Eye, Trash2, Edit, Clock, DollarSign, Calendar, X, TrendingUp } from "lucide-react";
+import {
+  Eye,
+  Trash2,
+  Edit,
+  Clock,
+  DollarSign,
+  Calendar,
+  X,
+  TrendingUp,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import ProductFormPage from "./ProductFormPage";
 import Swal from "sweetalert2";
 
 function ProductPage({ onRefresh }) {
-  const { getProducts, products, deleteProduct } = useProducts();
+  const { getMyProducts, products, deleteProduct } = useProducts();
   const [showEditModal, setShowEditModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
-    getProducts();
+    getMyProducts(); // ← CAMBIAR
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onRefresh]);
 
-const formatDate = (date) => {
-  const d = new Date(date);
-  
-  // Obtener componentes en hora local
-  const day = String(d.getDate()).padStart(2, '0');
-  const year = d.getFullYear();
-  const hours = String(d.getHours()).padStart(2, '0');
-  const minutes = String(d.getMinutes()).padStart(2, '0');
-  
-  const months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-  const month = months[d.getMonth()];
-  
-  return `${day} ${month} ${year}, ${hours}:${minutes}`;
-};
+  const formatDate = (date) => {
+    const d = new Date(date);
+
+    // Obtener componentes en hora local
+    const day = String(d.getDate()).padStart(2, "0");
+    const year = d.getFullYear();
+    const hours = String(d.getHours()).padStart(2, "0");
+    const minutes = String(d.getMinutes()).padStart(2, "0");
+
+    const months = [
+      "ene",
+      "feb",
+      "mar",
+      "abr",
+      "may",
+      "jun",
+      "jul",
+      "ago",
+      "sep",
+      "oct",
+      "nov",
+      "dic",
+    ];
+    const month = months[d.getMonth()];
+
+    return `${day} ${month} ${year}, ${hours}:${minutes}`;
+  };
 
   const getTimeRemaining = (dateEnd) => {
     const now = new Date();
     const end = new Date(dateEnd);
     const diff = end - now;
-    
-    if (diff <= 0) return 'Finalizada';
-    
+
+    if (diff <= 0) return "Finalizada";
+
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    
+
     if (hours > 24) {
       const days = Math.floor(hours / 24);
       return `${days}d ${hours % 24}h`;
@@ -48,74 +70,69 @@ const formatDate = (date) => {
     return `${hours}h ${minutes}m`;
   };
 
-  // ✅ Función para abrir el modal de edición
   const handleEditClick = (product) => {
     setSelectedProduct(product);
     setShowEditModal(true);
   };
 
-  // ✅ Función para abrir el modal de vista
   const handleViewClick = (product) => {
     setSelectedProduct(product);
     setShowViewModal(true);
   };
 
-  // ✅ Función para cerrar el modal de edición
   const handleCloseEditModal = () => {
     setShowEditModal(false);
     setSelectedProduct(null);
-    getProducts();
+    getMyProducts();
   };
 
-  // ✅ Función para cerrar el modal de vista
   const handleCloseViewModal = () => {
     setShowViewModal(false);
     setSelectedProduct(null);
   };
 
-  // ✅ Función para eliminar con confirmación
   const handleDelete = async (productId, productTitle = "esta subasta") => {
     const result = await Swal.fire({
-      title: '¿Estás seguro?',
+      title: "¿Estás seguro?",
       text: `Vas a eliminar "${productTitle}"`,
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#fa7942',
-      cancelButtonColor: '#64748b',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar',
-      background: '#171d26',
-      color: '#f7f9fb',
+      confirmButtonColor: "#fa7942",
+      cancelButtonColor: "#64748b",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+      background: "#171d26",
+      color: "#f7f9fb",
       customClass: {
-        popup: 'border border-slate-700'
-      }
+        popup: "border border-slate-700",
+      },
     });
 
     if (result.isConfirmed) {
       try {
         await deleteProduct(productId);
-        
+
         await Swal.fire({
-          title: '¡Eliminado!',
-          text: 'La subasta ha sido eliminada exitosamente',
-          icon: 'success',
-          confirmButtonColor: '#fa7942',
-          background: '#171d26',
-          color: '#f7f9fb',
+          title: "¡Eliminado!",
+          text: "La subasta ha sido eliminada exitosamente",
+          icon: "success",
+          confirmButtonColor: "#fa7942",
+          background: "#171d26",
+          color: "#f7f9fb",
           timer: 2000,
-          showConfirmButton: false
+          showConfirmButton: false,
         });
-        
-        getProducts();
+
+         getMyProducts();
       } catch (error) {
         console.error("Error al eliminar:", error);
         Swal.fire({
-          title: 'Error',
-          text: 'No se pudo eliminar la subasta. Intenta de nuevo.',
-          icon: 'error',
-          confirmButtonColor: '#fa7942',
-          background: '#171d26',
-          color: '#f7f9fb'
+          title: "Error",
+          text: "No se pudo eliminar la subasta. Intenta de nuevo.",
+          icon: "error",
+          confirmButtonColor: "#fa7942",
+          background: "#171d26",
+          color: "#f7f9fb",
         });
       }
     }
@@ -216,7 +233,7 @@ const formatDate = (date) => {
                       <Calendar className="w-3 h-3" />
                       Inicio
                     </span>
-                     <span>{formatDate(product.dateStart)}</span>
+                    <span>{formatDate(product.dateStart)}</span>
                   </div>
 
                   <div className="flex items-center justify-between text-xs text-[#9BAEBB]">
@@ -224,13 +241,12 @@ const formatDate = (date) => {
                       <Calendar className="w-3 h-3" />
                       Finaliza
                     </span>
-                     <span>{formatDate(product.dateEnd)}</span>
+                    <span>{formatDate(product.dateEnd)}</span>
                   </div>
                 </div>
 
                 <div className="border-t border-[#242a37] pt-4 flex gap-4 justify-center">
                   <div className="flex justify-evenly w-full gap-2">
-                    {/* ✅ Botón de Editar */}
                     <button
                       onClick={() => handleEditClick(product)}
                       className="bg-[#13171f] hover:bg-[#1a2029] flex-1 text-center font-semibold text-sm px-4 py-2 rounded-lg cursor-pointer transition-colors"
@@ -238,7 +254,6 @@ const formatDate = (date) => {
                       Editar
                     </button>
 
-                    {/* ✅ Botón Ver */}
                     <button
                       onClick={() => handleViewClick(product)}
                       className="bg-[#13171f] hover:bg-[#1a2029] flex-1 text-center font-semibold text-sm px-4 py-2 rounded-lg cursor-pointer transition-colors"
@@ -246,7 +261,6 @@ const formatDate = (date) => {
                       Ver
                     </button>
 
-                    {/* ✅ Botón Eliminar */}
                     <button
                       onClick={() => handleDelete(product._id, product.title)}
                       className="bg-red-600 hover:bg-red-700 text-white text-sm font-semibold py-2 px-3 rounded-lg transition-colors flex items-center justify-center"
@@ -261,7 +275,6 @@ const formatDate = (date) => {
         </div>
       </div>
 
-      {/* ✅ Modal de Edición */}
       {showEditModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
           <div className="bg-[#171d26] rounded-lg border border-slate-700 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
@@ -276,16 +289,15 @@ const formatDate = (date) => {
             </div>
 
             <div className="p-6">
-              <ProductFormPage 
-                productToEdit={selectedProduct} 
-                onClose={handleCloseEditModal} 
+              <ProductFormPage
+                productToEdit={selectedProduct}
+                onClose={handleCloseEditModal}
               />
             </div>
           </div>
         </div>
       )}
 
-      {/* ✅ Modal de Vista Detallada */}
       {showViewModal && selectedProduct && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
           <div className="bg-[#171d26] rounded-lg border border-slate-700 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -305,7 +317,8 @@ const formatDate = (date) => {
                   alt={selectedProduct.title}
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    e.target.src = "https://via.placeholder.com/600x400?text=Sin+Imagen";
+                    e.target.src =
+                      "https://via.placeholder.com/600x400?text=Sin+Imagen";
                   }}
                 />
                 <div className="absolute top-4 right-16 bg-[#fa7942] px-4 py-2 rounded-full">
