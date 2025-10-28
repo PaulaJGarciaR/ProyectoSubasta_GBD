@@ -8,12 +8,14 @@ import DashboardVendedor from "./layouts/DashboardVendedor"
 import DashboardComprador from "./layouts/DashboardComprador"
 import ProductFormPage from "./pages/ProductFormPage";
 import { ProductProvider } from "./context/ProductContext";
+import { SocketProvider } from './context/SocketContext';
 
 function App() {
   return (
     <AuthProvider>
       <ProductProvider>
-        <BrowserRouter>
+        <SocketProvider>
+           <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
           <Route path="/login" element={<LoginPage />}></Route>
@@ -26,6 +28,8 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
+        </SocketProvider>
+       
       </ProductProvider>
       
     </AuthProvider>

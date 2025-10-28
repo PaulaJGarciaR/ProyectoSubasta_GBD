@@ -1,6 +1,11 @@
-import app from './app.js'
-import { connectDB } from './db.js'
+// backend/index.js
+import httpServer from './app.js'; // Cambio: importar httpServer en lugar de app
+import { connectDB } from './db.js';
 
 connectDB();
-app.listen(4000);
-console.log('Serve on port',4000);
+
+httpServer.listen(4000); // Cambio: usar httpServer en lugar de app
+console.log('🚀 ================================');
+console.log('🚀 Serve on port', 4000);
+console.log('🔌 Socket.IO habilitado');
+console.log('🚀 ================================');
