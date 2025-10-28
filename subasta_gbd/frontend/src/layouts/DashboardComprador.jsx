@@ -13,149 +13,25 @@ import {
   Eye,
   Loader2,
   DollarSign,
-  MapPin,
   Tag,
   AlertCircle,
 } from "lucide-react";
 import UserProfile from "../pages/UserProfile";
 import { useAuth } from "../context/AuthContext";
 import { useProducts } from "../context/ProductContext";
+import { useSocket } from "../context/SocketContext";
+import { createBidRequest } from "../api/bids";
+import NotificationsPanel from "../components/NotificationsPanel";
 import Swal from 'sweetalert2';
 
 var moneda = "COP";
 
-const productsList = [
-  {
-    id: 1,
-    name: "Ford Mustang GT",
-    year: 2020,
-    category: "autos",
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbL0hrXKgU9P68VjfrE8IwHciIvkZKSKi38w&s",
-    currentBid: 200000000,
-    moneda,
-    endDate: "2025-10-15",
-    endTime: "18:00",
-    status: "Activa",
-    features: [
-      "Motor V8 5.0L Coyote",
-      "450 HP de potencia",
-      "Sistema SYNC 3",
-      "Performance Package incluido",
-    ],
-    location: "Subasta Premium Colombia",
-    description:
-      "Muscle car americano con motor V8, perfecto para amantes de la velocidad y el estilo clásico americano con tecnología moderna.",
-    mechanicalAssistance: "Asistencia de la mecánica",
-    baseLocation:
-      "Base Multicarrural: Subasta Premium Colombia • Pujado al día",
-  },
-  {
-    id: 2,
-    name: "Laptop Gaming Pro",
-    year: 2024,
-    category: "tecnologia",
-    image:
-      "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800&q=80",
-    currentBid: 3000000,
-    moneda,
-    endDate: "2025-10-12",
-    endTime: "20:00",
-    status: "Por finalizar",
-    features: ["Intel Core i9", "32GB RAM", "RTX 4080", "Pantalla 165Hz"],
-    location: "Subasta Tech Online",
-    description:
-      "Laptop gaming de alta gama para profesionales y gamers exigentes.",
-  },
-  {
-    id: 3,
-    name: "Pintura Original Contemporánea",
-    year: 2023,
-    category: "arte",
-    image:
-      "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&q=80",
-    currentBid: 1250000,
-    moneda,
-    endDate: "2025-10-18",
-    endTime: "16:00",
-    status: "Activa",
-    features: [
-      "Óleo sobre lienzo",
-      "120 x 90 cm",
-      "Certificado de autenticidad",
-      "Marco incluido",
-    ],
-    location: "Galería Nacional",
-    description:
-      "Obra de arte contemporánea única, perfecta para coleccionistas.",
-  },
-  {
-    id: 4,
-    name: "Reloj de Lujo Suizo",
-    year: 2022,
-    category: "joyeria",
-    image:
-      "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=800&q=80",
-    currentBid: 400000,
-    moneda,
-    endDate: "2025-10-20",
-    endTime: "22:00",
-    status: "Activa",
-    features: [
-      "Acero inoxidable",
-      "Movimiento automático",
-      "Resistente al agua 300m",
-      "Caja original",
-    ],
-    location: "Subasta Premium Luxury",
-    description:
-      "Reloj de lujo suizo con acabados premium y mecanismo de alta precisión.",
-  },
-  {
-    id: 5,
-    name: "Tesla Model 3",
-    year: 2023,
-    category: "autos",
-    image:
-      "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=800&q=80",
-    currentBid: 10000000,
-    moneda,
-    endDate: "2025-10-22",
-    endTime: "14:00",
-    status: "Próxima",
-    features: [
-      "Motor eléctrico",
-      "Autopilot incluido",
-      "Batería de largo alcance",
-      "Carga rápida",
-    ],
-    location: "Subasta Premium Autos",
-    description:
-      "Vehículo eléctrico de última generación con tecnología avanzada.",
-  },
-  {
-    id: 6,
-    name: "Smartphone Pro Max",
-    year: 2024,
-    category: "tecnologia",
-    image:
-      "https://www.clevercel.co/cdn/shop/files/Portadas_iPhone14ProMax.webp?v=1757093052",
-    currentBid: 500000,
-    moneda,
-    endDate: "2025-10-16",
-    endTime: "18:00",
-    status: "Activa",
-    features: ["Pantalla OLED", "256GB", "5G", "Triple cámara"],
-    location: "Subasta Tech",
-    description:
-      "Smartphone de última generación con las mejores prestaciones.",
-  },
-];
-
 function DashboardComprador() {
   const { logout, user } = useAuth();
+  const { unreadCount } = useSocket();
   const [currentPage, setCurrentPage] = useState("inicio");
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const handlePageChange = (newPage) => {
     if (newPage === currentPage) return;
@@ -254,10 +130,19 @@ function DashboardComprador() {
             </div>
 
             <div className="flex items-center gap-4">
-              <button className="relative p-2 hover:bg-slate-700 rounded-lg">
+              {/* Botón de Notificaciones */}
+              <button 
+                onClick={() => setShowNotifications(true)}
+                className="relative p-2 hover:bg-slate-700 rounded-lg transition-colors"
+              >
                 <Bell className="w-6 h-6" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-[#ff9365] rounded-full"></span>
+                {unreadCount > 0 && (
+                  <span className="absolute top-0 right-0 w-5 h-5 bg-[#fa7942] rounded-full flex items-center justify-center text-xs font-bold">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
               </button>
+
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => handlePageChange("perfil")}
@@ -294,14 +179,21 @@ function DashboardComprador() {
           {renderContent()}
         </div>
       </main>
+
+      {/* Panel de Notificaciones */}
+      <NotificationsPanel 
+        isOpen={showNotifications} 
+        onClose={() => setShowNotifications(false)} 
+      />
     </div>
   );
 }
 
-// Componente de Inicio con datos del ProductContext
+// Componente de Inicio
 function InicioContent() {
   const [currentSlide] = useState(0);
   const { products, getProducts } = useProducts();
+  const { socket } = useSocket();
   const [imageIndex, setImageIndex] = useState(0);
   const [localLoading, setLocalLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -313,46 +205,32 @@ function InicioContent() {
     "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1200&q=80",
   ];
 
+  const productsList = [
+    {
+      id: 1,
+      name: "Ford Mustang GT",
+      year: 2020,
+      description: "Muscle car americano con motor V8",
+      features: ["Motor V8 5.0L", "450 HP"],
+    },
+  ];
+
   const featuredProduct = productsList[currentSlide];
 
-  // Cargar productos al montar el componente
+  // Cargar productos
   useEffect(() => {
     let isMounted = true;
 
     const loadProducts = async () => {
       try {
         if (!isMounted) return;
-        
         setLocalLoading(true);
-
-        const result = await getProducts();
-        
-        if (!isMounted) return;
-        
-        if (!result || result.length === 0) {
-          Swal.fire({
-            title: 'Sin productos',
-            text: 'No hay productos en la base de datos o no se pudieron cargar.',
-            icon: 'info',
-            confirmButtonColor: '#fa7942',
-            background: '#171d26',
-            color: '#f7f9fb',
-          });
-        }
+        await getProducts();
       } catch (error) {
         if (!isMounted) return;
-        
-        let errorMessage = 'No se pudieron cargar los productos.';
-        
-        if (error.message === 'Network Error') {
-          errorMessage = 'No se puede conectar al backend. Verifica que esté corriendo en http://localhost:4000';
-        } else if (error.response) {
-          errorMessage = `Error del servidor: ${error.response.status} - ${error.response.statusText}`;
-        }
-        
         Swal.fire({
           title: 'Error',
-          text: errorMessage,
+          text: 'No se pudieron cargar los productos',
           icon: 'error',
           confirmButtonColor: '#fa7942',
           background: '#171d26',
@@ -370,8 +248,22 @@ function InicioContent() {
     return () => {
       isMounted = false;
     };
-     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Escuchar actualizaciones de productos en tiempo real
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on('product_updated', (data) => {
+      console.log('Producto actualizado en tiempo real:', data);
+      // Actualizar el producto específico
+      getProducts();
+    });
+
+    return () => {
+      socket.off('product_updated');
+    };
+  }, [socket]);
 
   // Carrusel automático
   useEffect(() => {
@@ -381,27 +273,22 @@ function InicioContent() {
     return () => clearInterval(interval);
   }, [heroImages.length]);
 
-  // Función helper para obtener el nombre del producto (maneja ambos formatos)
   const getProductName = (product) => {
     return product.title || product.nombre || product.name || "Sin título";
   };
 
-  // Función helper para obtener la descripción
   const getProductDescription = (product) => {
     return product.description || product.descripcion || "Sin descripción";
   };
 
-  // Función helper para obtener la imagen
   const getProductImage = (product) => {
     return product.image || product.imagen || product.imageUrl || 'https://via.placeholder.com/400x300?text=Sin+Imagen';
   };
 
-  // Función helper para obtener el precio
   const getProductPrice = (product) => {
-    return product.startingPrice || product.precioInicial || product.precioActual || product.currentBid || 0;
+    return product.currentPrice || product.startingPrice || product.precioInicial || 0;
   };
 
-  // Función helper para obtener la fecha de fin
   const getProductEndDate = (product) => {
     if (product.dateEnd) {
       return new Date(product.dateEnd).toLocaleDateString('es-ES');
@@ -409,12 +296,6 @@ function InicioContent() {
     return product.fechaFin || product.endDate || "Por definir";
   };
 
-  // Función helper para obtener ubicación
-  const getProductLocation = (product) => {
-    return product.location || product.ubicacion || "Ubicación no especificada";
-  };
-
-  // Función helper para obtener características
   const getProductFeatures = (product) => {
     return product.features || product.caracteristicas || [];
   };
@@ -424,12 +305,7 @@ function InicioContent() {
     
     if (product.dateEnd) {
       endDate = new Date(product.dateEnd);
-    } 
-    else if (product.fechaFin) {
-      const endTime = product.horaFin || product.endTime || "23:59";
-      endDate = new Date(`${product.fechaFin} ${endTime}`);
-    } 
-    else {
+    } else {
       return "Por definir";
     }
 
@@ -445,27 +321,6 @@ function InicioContent() {
     if (days > 0) return `${days}d ${hours}h ${minutes}m`;
     if (hours > 0) return `${hours}h ${minutes}m`;
     return `${minutes}m`;
-  };
-
-  const handleRefresh = async () => {
-    try {
-      setLocalLoading(true);
-      await getProducts();
-      Swal.fire({
-        title: '¡Actualizado!',
-        text: 'Productos actualizados correctamente',
-        icon: 'success',
-        confirmButtonColor: '#fa7942',
-        background: '#171d26',
-        color: '#f7f9fb',
-        timer: 1500,
-        showConfirmButton: false,
-      });
-    } catch (error) {
-      console.error('Error al actualizar:', error);
-    } finally {
-      setLocalLoading(false);
-    }
   };
 
   const handleViewDetails = (product) => {
@@ -493,7 +348,6 @@ function InicioContent() {
 
     const currentPrice = getProductPrice(selectedProduct);
     const bidValue = parseFloat(bidAmount);
-    const minimumBid = currentPrice * 1.05; // 5% más que el precio actual
 
     if (bidValue <= currentPrice) {
       Swal.fire({
@@ -507,31 +361,8 @@ function InicioContent() {
       return;
     }
 
-    if (bidValue < minimumBid) {
-      const result = await Swal.fire({
-        title: 'Puja recomendada',
-        html: `
-          <p>Tu puja de <strong>$${bidValue.toLocaleString()}</strong> es válida pero baja.</p>
-          <p>Se recomienda pujar al menos <strong>$${minimumBid.toLocaleString()}</strong> (5% más).</p>
-          <p>¿Deseas continuar con tu puja actual?</p>
-        `,
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#fa7942',
-        cancelButtonColor: '#64748b',
-        confirmButtonText: 'Sí, pujar',
-        cancelButtonText: 'Cancelar',
-        background: '#171d26',
-        color: '#f7f9fb',
-      });
-
-      if (!result.isConfirmed) return;
-    }
-
-    // Aquí iría la lógica para enviar la puja al backend
     try {
-      // TODO: Implementar llamada al API
-      // await createBid(selectedProduct._id, bidValue);
+      const response = await createBidRequest(selectedProduct._id, bidValue);
       
       await Swal.fire({
         title: '¡Puja registrada!',
@@ -548,13 +379,13 @@ function InicioContent() {
       });
       
       handleCloseModal();
-      await getProducts(); // Actualizar lista de productos
+      await getProducts();
       
     } catch (error) {
-      console.log(error)
+      console.error('Error al crear puja:', error);
       Swal.fire({
         title: 'Error',
-        text: 'No se pudo registrar la puja. Inténtalo de nuevo.',
+        text: error.response?.data?.message || 'No se pudo registrar la puja',
         icon: 'error',
         confirmButtonColor: '#fa7942',
         background: '#171d26',
@@ -565,7 +396,7 @@ function InicioContent() {
 
   return (
     <div className="min-h-screen bg-[#0F1F29]">
-      {/* Hero Section with Carousel */}
+      {/* Hero Section */}
       <section className="relative h-[600px] overflow-hidden">
         <div className="absolute inset-0">
           <img
@@ -633,60 +464,31 @@ function InicioContent() {
                 ({products.length})
               </span>
             </h3>
-            <button
-              onClick={handleRefresh}
-              disabled={localLoading}
-              className="px-4 py-2 bg-[#fa7942] rounded-lg hover:bg-[#ff9365] transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-            >
-              {localLoading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Actualizando...
-                </>
-              ) : (
-                "Actualizar"
-              )}
-            </button>
           </div>
 
-          {/* Estado de carga */}
           {localLoading && (
             <div className="flex flex-col justify-center items-center py-20">
               <Loader2 className="w-12 h-12 text-[#fa7942] animate-spin mb-4" />
-              <p className="text-gray-400">Cargando productos desde MongoDB...</p>
+              <p className="text-gray-400">Cargando productos...</p>
             </div>
           )}
 
-          {/* Sin productos */}
           {!localLoading && products.length === 0 && (
             <div className="text-center py-20">
-              <div className="mb-4">
-                <Gavel className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              </div>
-              <p className="text-gray-400 text-lg mb-2">
-                No hay productos disponibles en este momento
+              <Gavel className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+              <p className="text-gray-400 text-lg">
+                No hay productos disponibles
               </p>
-              <p className="text-gray-500 text-sm mb-4">
-                Verifica tu conexión con el backend y MongoDB
-              </p>
-              <button
-                onClick={handleRefresh}
-                className="px-6 py-2 bg-[#fa7942] rounded-lg hover:bg-[#ff9365] transition-colors"
-              >
-                Reintentar
-              </button>
             </div>
           )}
 
-          {/* Grid de productos del BACKEND */}
           {!localLoading && products.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map((product) => (
                 <div
                   key={product._id}
-                  className="group bg-[#1a2332] rounded-xl overflow-hidden hover:shadow-lg hover:shadow-blue-900/20 transition-all duration-300 border border-gray-800/30 hover:border-[#ff9365]/30 hover:-translate-y-1"
+                  className="group bg-[#1a2332] rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-800/30 hover:border-[#ff9365]/30 hover:-translate-y-1"
                 >
-                  {/* Imagen */}
                   <div className="relative overflow-hidden">
                     <img
                       src={getProductImage(product)}
@@ -697,16 +499,13 @@ function InicioContent() {
                       }}
                     />
                     
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#1a2332]/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    
                     <div className="absolute top-4 left-4 px-3 py-1.5 rounded-lg bg-[#fa7942] backdrop-blur-sm">
                       <span className="text-white text-xs font-semibold">
-                        {product.estado || product.status || "Activa"}
+                        {product.estado || "Activa"}
                       </span>
                     </div>
                   </div>
 
-                  {/* Contenido */}
                   <div className="p-6 space-y-4">
                     <h4 className="text-lg font-semibold text-white group-hover:text-[#fa7942] transition-colors line-clamp-1">
                       {getProductName(product)}
@@ -763,9 +562,9 @@ function InicioContent() {
         </div>
       </section>
 
-      {/* Modal de Detalles del Producto (DATOS DEL BACKEND) */}
+      {/* Modal de Detalles del Producto */}
       {selectedProduct && (
-        <div className="fixed inset-0 bg-black/80 h-screen flex items-center justify-center p-4 overflow-y-auto  z-[60]">
+        <div className="fixed inset-0 bg-black/80 h-screen flex items-center justify-center p-4 overflow-y-auto z-[60]">
           <div className="bg-[#13171f] rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-gray-800/50 shadow-2xl">
             {/* Header del Modal */}
             <div className="relative">
@@ -777,7 +576,7 @@ function InicioContent() {
                   e.target.src = 'https://via.placeholder.com/800x400?text=Sin+Imagen';
                 }}
               />
-              <div className="absolute inset-0  rounded-t-2xl" />
+              <div className="absolute inset-0 rounded-t-2xl" />
               
               <button
                 onClick={handleCloseModal}
@@ -823,6 +622,11 @@ function InicioContent() {
                       {selectedProduct.moneda || "COP"}
                     </span>
                   </div>
+                  {selectedProduct.totalBids > 0 && (
+                    <p className="text-sm text-gray-500 mt-2">
+                      {selectedProduct.totalBids} puja{selectedProduct.totalBids !== 1 ? 's' : ''}
+                    </p>
+                  )}
                 </div>
 
                 {/* Tiempo Restante */}
@@ -841,7 +645,7 @@ function InicioContent() {
                 </div>
               </div>
 
-              {/* Características adicionales */}
+              {/* Características */}
               {getProductFeatures(selectedProduct).length > 0 && (
                 <div className="bg-[#13171f] p-6 rounded-xl border border-gray-800/50">
                   <div className="flex items-center gap-2 text-white mb-4">
@@ -858,7 +662,6 @@ function InicioContent() {
                   </div>
                 </div>
               )}
-              
 
               {/* Sección de Puja */}
               <div className="bg-[#171d26] p-6 rounded-xl">
@@ -880,7 +683,7 @@ function InicioContent() {
                         type="number"
                         value={bidAmount}
                         onChange={(e) => setBidAmount(e.target.value)}
-                        placeholder={`Mínimo: ${(getProductPrice(selectedProduct) * 1.05).toLocaleString()}`}
+                        placeholder={`Mínimo: ${(getProductPrice(selectedProduct) + 1).toLocaleString()}`}
                         className="w-full pl-10 pr-4 py-4 bg-[#13171f] rounded-lg text-white text-lg focus:outline-none focus:ring-2 focus:ring-[#fa7942] focus:border-transparent"
                       />
                     </div>
