@@ -70,7 +70,42 @@ export const SocketProvider = ({ children }) => {
     // Escuchar actualizaciones de productos
     newSocket.on('product_updated', (data) => {
       console.log('Producto actualizado:', data);
-      // Aquí puedes actualizar el estado de productos si es necesario
+    });
+
+    // ⭐ NUEVO: Escuchar cuando ganas una subasta
+    newSocket.on('auction_won', (data) => {
+      console.log('🎉 ¡Has ganado una subasta!', data);
+      
+      // Mostrar notificación especial de victoria
+      if (Notification.permission === 'granted') {
+        new Notification('🏆 ¡Felicidades! Has ganado', {
+          body: `Ganaste: ${data.productTitle} por ${data.finalPrice.toLocaleString()}`,
+          icon: '/trophy.png',
+          badge: '/trophy.png'
+        });
+      }
+
+      // También mostrar SweetAlert
+      if (typeof Swal !== 'undefined') {
+        Swal.fire({
+          title: '🏆 ¡Felicidades!',
+          html: `
+            <p class="text-lg mb-2">Has ganado la subasta de:</p>
+            <p class="text-2xl font-bold text-green-400">${data.productTitle}</p>
+            <p class="text-xl mt-3">Precio final: <span class="text-green-400">${data.finalPrice.toLocaleString()}</span></p>
+          `,
+          icon: 'success',
+          confirmButtonColor: '#22c55e',
+          background: '#171d26',
+          color: '#f7f9fb',
+          timer: 5000
+        });
+      }
+    });
+
+    // ⭐ NUEVO: Escuchar cuando se cierra una subasta
+    newSocket.on('auction_closed', (data) => {
+      console.log('Subasta cerrada:', data);
     });
 
     setSocket(newSocket);

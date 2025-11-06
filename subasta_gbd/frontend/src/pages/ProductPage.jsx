@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useProducts } from "../context/ProductContext";
+import { acceptBidRequest, cancelAuctionRequest } from "../api/bids";
 import {
   Eye,
   Trash2,
@@ -9,6 +10,8 @@ import {
   Calendar,
   X,
   TrendingUp,
+  CheckCircle,
+  XCircle,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import ProductFormPage from "./ProductFormPage";
@@ -21,7 +24,7 @@ function ProductPage({ onRefresh }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
-    getMyProducts(); // ← CAMBIAR
+    getMyProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onRefresh]);
 
@@ -123,12 +126,130 @@ function ProductPage({ onRefresh }) {
           showConfirmButton: false,
         });
 
-         getMyProducts();
+        getMyProducts();
       } catch (error) {
         console.error("Error al eliminar:", error);
         Swal.fire({
           title: "Error",
           text: "No se pudo eliminar la subasta. Intenta de nuevo.",
+          icon: "error",
+          confirmButtonColor: "#fa7942",
+          background: "#171d26",
+          color: "#f7f9fb",
+        });
+      }
+    }
+  };
+
+  
+  const handleAcceptBid = async (product) => {
+    if (!product.currentBidder || product.totalBids === 0) {
+      Swal.fire({
+        title: "No hay pujas",
+        text: "Este producto aún no tiene pujas para aceptar",
+        icon: "info",
+        confirmButtonColor: "#fa7942",
+        background: "#171d26",
+        color: "#f7f9fb",
+      });
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: "¿Aceptar esta puja?",
+      html: `
+        <div class="text-left">
+          <p class="mb-2">Estás a punto de aceptar la puja de:</p>
+          <p class="text-xl font-bold text-green-400 mb-2">$${product.currentPrice?.toLocaleString()} ${
+        product.moneda || "COP"
+      }</p>
+          <p class="text-sm text-gray-400">Total de pujas: ${
+            product.totalBids
+          }</p>
+          <p class="text-sm text-gray-400 mt-4">Esta acción cerrará la subasta y notificará al ganador.</p>
+        </div>
+      `,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#22c55e",
+      cancelButtonColor: "#64748b",
+      confirmButtonText: "Sí, aceptar puja",
+      cancelButtonText: "Cancelar",
+      background: "#171d26",
+      color: "#f7f9fb",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await acceptBidRequest(product._id);
+
+        await Swal.fire({
+          title: "¡Puja aceptada!",
+          html: `
+            <div class="text-left">
+              <p class="mb-2">Has vendido: <strong>${product.title}</strong></p>
+              <p class="text-2xl font-bold text-green-400 mb-2">$${product.currentPrice?.toLocaleString()}</p>
+              <p class="text-sm text-gray-400">El comprador ha sido notificado.</p>
+            </div>
+          `,
+          icon: "success",
+          confirmButtonColor: "#fa7942",
+          background: "#171d26",
+          color: "#f7f9fb",
+        });
+
+        getMyProducts();
+      } catch (error) {
+        Swal.fire({
+          title: "Error",
+          text: error.response?.data?.message || "No se pudo aceptar la puja",
+          icon: "error",
+          confirmButtonColor: "#fa7942",
+          background: "#171d26",
+          color: "#f7f9fb",
+        });
+      }
+    }
+  };
+
+  // ⭐ FUNCIÓN PARA CANCELAR SUBASTA
+  const handleCancelAuction = async (product) => {
+    const { value: reason } = await Swal.fire({
+      title: "¿Cancelar subasta?",
+      input: "textarea",
+      inputLabel: "Motivo de cancelación (opcional)",
+      inputPlaceholder: "Explica por qué cancelas esta subasta...",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#64748b",
+      confirmButtonText: "Sí, cancelar",
+      cancelButtonText: "No cancelar",
+      background: "#171d26",
+      color: "#f7f9fb",
+      inputAttributes: {
+        "aria-label": "Motivo de cancelación",
+      },
+    });
+
+    if (reason !== undefined) {
+      try {
+        await cancelAuctionRequest(product._id, reason);
+
+        await Swal.fire({
+          title: "Subasta cancelada",
+          text: "La subasta ha sido cancelada y los participantes han sido notificados",
+          icon: "success",
+          confirmButtonColor: "#fa7942",
+          background: "#171d26",
+          color: "#f7f9fb",
+        });
+
+        getMyProducts();
+      } catch (error) {
+        Swal.fire({
+          title: "Error",
+          text:
+            error.response?.data?.message || "No se pudo cancelar la subasta",
           icon: "error",
           confirmButtonColor: "#fa7942",
           background: "#171d26",
@@ -228,6 +349,30 @@ function ProductPage({ onRefresh }) {
                     </span>
                   </div>
 
+                  {/* ⭐ NUEVA INFO: Precio Actual y Total de Pujas */}
+                  {product.currentPrice && product.currentPrice > product.startingPrice && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-[#9BAEBB] flex items-center gap-1">
+                        <TrendingUp className="w-4 h-4" />
+                        Precio Actual
+                      </span>
+                      <span className="text-lg font-bold text-green-400">
+                        ${product.currentPrice.toFixed(2)}
+                      </span>
+                    </div>
+                  )}
+
+                  {product.totalBids > 0 && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-[#9BAEBB]">
+                        Total de pujas
+                      </span>
+                      <span className="text-sm font-semibold text-green-400">
+                        {product.totalBids}
+                      </span>
+                    </div>
+                  )}
+
                   <div className="flex items-center justify-between text-xs text-[#9BAEBB]">
                     <span className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
@@ -245,6 +390,16 @@ function ProductPage({ onRefresh }) {
                   </div>
                 </div>
 
+                {product.currentBidder && product.totalBids > 0 && (
+                  <button
+                    onClick={() => handleAcceptBid(product)}
+                    className="w-full text-[#13171f] mb-3 bg-[#fa7942] hover:bg-[#ff9365] cursor-pointer font-semibold py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  >
+                    <CheckCircle className="w-4 h-4" />
+                    Aceptar Puja (${product.currentPrice?.toFixed(2)})
+                  </button>
+                )}
+
                 <div className="border-t border-[#242a37] pt-4 flex gap-4 justify-center">
                   <div className="flex justify-evenly w-full gap-2">
                     <button
@@ -260,6 +415,8 @@ function ProductPage({ onRefresh }) {
                     >
                       Ver
                     </button>
+
+                    
 
                     <button
                       onClick={() => handleDelete(product._id, product.title)}
@@ -350,7 +507,7 @@ function ProductPage({ onRefresh }) {
                     <span>Oferta actual</span>
                   </div>
                   <p className="text-3xl font-bold text-[#4ade80]">
-                    ${selectedProduct.startingPrice.toFixed(2)}
+                    ${(selectedProduct.currentPrice || selectedProduct.startingPrice).toFixed(2)}
                   </p>
                 </div>
 
@@ -360,7 +517,9 @@ function ProductPage({ onRefresh }) {
                     <TrendingUp className="w-4 h-4" />
                     <span>Total de ofertas</span>
                   </div>
-                  <p className="text-3xl font-bold text-[#4ade80]">34</p>
+                  <p className="text-3xl font-bold text-[#4ade80]">
+                    {selectedProduct.totalBids || 0}
+                  </p>
                 </div>
 
                 {/* Tiempo Restante */}

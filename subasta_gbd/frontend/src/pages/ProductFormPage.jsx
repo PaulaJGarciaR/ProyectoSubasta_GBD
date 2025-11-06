@@ -34,9 +34,7 @@ function ProductFormPage({ productToEdit, onClose }) {
         setValue("startingPrice", productToEdit.startingPrice);
         setValue("dateStart", formatDateForInput(productToEdit.dateStart));
         setValue("dateEnd", formatDateForInput(productToEdit.dateEnd));
-      }
-
-      else if (params.id) {
+      } else if (params.id) {
         const product = await getProduct(params.id);
         console.log("Cargando desde URL:", product);
         setValue("title", product.title);
@@ -53,19 +51,19 @@ function ProductFormPage({ productToEdit, onClose }) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-       const formattedData = {
-      ...data,
-      dateStart: (() => {
-        // Añadir 'T00:00:00' para forzar interpretación local
-        const date = new Date(data.dateStart + 'T00:00:00');
-        return date;
-      })(),
-      dateEnd: (() => {
-        // Añadir 'T23:59:59' para forzar interpretación local
-        const date = new Date(data.dateEnd + 'T23:59:59');
-        return date;
-      })(),
-    };
+      const formattedData = {
+        ...data,
+        dateStart: (() => {
+          // Añadir 'T00:00:00' para forzar interpretación local
+          const date = new Date(data.dateStart + "T00:00:00");
+          return date;
+        })(),
+        dateEnd: (() => {
+          // Añadir 'T23:59:59' para forzar interpretación local
+          const date = new Date(data.dateEnd + "T23:59:59");
+          return date;
+        })(),
+      };
 
       if (productToEdit) {
         await updateProduct(productToEdit._id, formattedData);
@@ -84,8 +82,7 @@ function ProductFormPage({ productToEdit, onClose }) {
         if (onClose) {
           onClose(); // Cerrar modal
         }
-      }
-      else if (params.id) {
+      } else if (params.id) {
         await updateProduct(params.id, formattedData);
 
         Swal.fire({
@@ -100,9 +97,7 @@ function ProductFormPage({ productToEdit, onClose }) {
         });
 
         navigate("/dashboardvendedor");
-      }
-      
-      else {
+      } else {
         await createProduct(formattedData);
 
         Swal.fire({
@@ -170,6 +165,31 @@ function ProductFormPage({ productToEdit, onClose }) {
             <span className="text-red-400 text-xs mt-1">
               {errors.description.message}
             </span>
+          )}
+        </div>
+
+         <div>
+          <label htmlFor="" className="text-[#f7f9fb] text-sm font-semibold">
+            Categoria
+          </label>
+          <select
+            {...register("category", {
+              required: "Campo Obligatorio*",
+            })}
+            className="mt-2 p-3 w-full rounded-lg bg-[#242a37] text-[#f7f9fb] placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
+          >
+            <option value="todos">Todos</option>
+            <option value="autos">Autos</option>
+            <option value="tecnologia">Tecnología</option>
+            <option value="arte">Arte</option>
+            <option value="joyeria">Joyería</option>
+            
+      
+          </select>
+          {errors.documentType && (
+            <p className="text-[#E53935] font-semibold text-sm">
+              {errors.documentType.message}
+            </p>
           )}
         </div>
 

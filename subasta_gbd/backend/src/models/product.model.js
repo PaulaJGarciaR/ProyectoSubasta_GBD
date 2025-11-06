@@ -1,4 +1,4 @@
-// backend/models/product.model.js
+
 import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema(
@@ -22,11 +22,10 @@ const productSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
-    // ⭐ NUEVO: Precio actual de la subasta (se actualiza con cada puja)
     currentPrice: {
       type: Number,
       default: function() {
-        return this.startingPrice; // Empieza con el precio inicial
+        return this.startingPrice; 
       },
       min: 0,
     },
@@ -38,28 +37,32 @@ const productSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
-    // ⭐ NUEVO: Estado de la subasta
     estado: {
       type: String,
-      enum: ['Activa', 'Finalizada', 'Cancelada'],
+      enum: ['Activa', 'Finalizada', 'Cancelada', 'Vendida'],
       default: 'Activa'
     },
-    // ⭐ NUEVO: Categoría del producto
+    winner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null
+    },
+    finalPrice: {
+      type: Number,
+      default: null
+    },
     category: {
       type: String,
       default: 'general'
     },
-    // ⭐ NUEVO: Moneda
     moneda: {
       type: String,
       default: 'COP'
     },
-    // ⭐ NUEVO: Ubicación
     location: {
       type: String,
       default: 'Colombia'
     },
-    // ⭐ NUEVO: Características del producto
     features: [{
       type: String
     }],
@@ -68,13 +71,11 @@ const productSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    // ⭐ NUEVO: Usuario con la puja más alta actual
     currentBidder: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       default: null
     },
-    // ⭐ NUEVO: Contador total de pujas
     totalBids: {
       type: Number,
       default: 0
@@ -84,8 +85,6 @@ const productSchema = new mongoose.Schema(
     timestamps: true, 
   }
 );
-
-// Índices para consultas rápidas
 productSchema.index({ user: 1, estado: 1 });
 productSchema.index({ dateEnd: 1, estado: 1 });
 productSchema.index({ category: 1 });

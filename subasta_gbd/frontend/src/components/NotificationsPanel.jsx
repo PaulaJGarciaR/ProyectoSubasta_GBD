@@ -14,7 +14,7 @@ export default function NotificationsPanel({ isOpen, onClose }) {
   const { notifications: realtimeNotifications, setNotifications, setUnreadCount } = useSocket();
   const [allNotifications, setAllNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [filter, setFilter] = useState('all'); // 'all' or 'unread'
+  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     if (isOpen) {
@@ -22,7 +22,6 @@ export default function NotificationsPanel({ isOpen, onClose }) {
     }
   }, [isOpen, filter]);
 
-  // Combinar notificaciones en tiempo real con las cargadas
   useEffect(() => {
     if (realtimeNotifications.length > 0) {
       setAllNotifications(prev => {
@@ -123,16 +122,40 @@ export default function NotificationsPanel({ isOpen, onClose }) {
   const getNotificationIcon = (type) => {
     switch (type) {
       case 'new_bid':
-        return '🔨';
+        return '⚒︎';
       case 'outbid':
-        return '⚠️';
+        return '△';
       case 'auction_won':
-        return '🏆';
+        return '★';
       case 'auction_end':
-        return '⏰';
+        return '⏱︎';
       default:
-        return '📢';
+        return '‼';
     }
+  };
+
+  const formatNotificationMessage = (notification) => {
+    if (notification.sender) {
+    const userName = notification.sender.username || notification.sender.email || 'Un usuario';
+      return notification.message.replace('Un usuario', userName);
+    }
+    return notification.message;
+  };
+
+  const getProductImage = (notification) => {
+    if (!notification.product) return null;
+    
+    // Si product.image es una cadena (URL directa)
+    if (typeof notification.product.image === 'string') {
+      return notification.product.image;
+    }
+    
+    // Si product tiene un array de images
+    if (notification.product.images && notification.product.images.length > 0) {
+      return notification.product.images[0];
+    }
+    
+    return null;
   };
 
   const formatDate = (date) => {
@@ -155,7 +178,6 @@ export default function NotificationsPanel({ isOpen, onClose }) {
   return (
     <div className="fixed inset-0 bg-black/60 z-50 flex items-start justify-end p-4">
       <div className="bg-[#171d26] rounded-xl w-full max-w-md h-[90vh] flex flex-col shadow-2xl border border-slate-700">
-        {/* Header */}
         <div className="p-4 border-b border-slate-700 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Bell className="w-6 h-6 text-[#fa7942]" />
@@ -169,7 +191,6 @@ export default function NotificationsPanel({ isOpen, onClose }) {
           </button>
         </div>
 
-        {/* Filtros */}
         <div className="p-4 border-b border-slate-700 flex gap-2">
           <button
             onClick={() => setFilter('all')}
@@ -199,7 +220,6 @@ export default function NotificationsPanel({ isOpen, onClose }) {
           </button>
         </div>
 
-        {/* Lista de Notificaciones */}
         <div className="flex-1 overflow-y-auto">
           {loading ? (
             <div className="flex justify-center items-center h-full">
@@ -212,67 +232,73 @@ export default function NotificationsPanel({ isOpen, onClose }) {
             </div>
           ) : (
             <div className="divide-y divide-slate-700">
-              {allNotifications.map((notification) => (
-                <div
-                  key={notification._id}
-                  className={`p-4 hover:bg-slate-700/50 transition-colors ${
-                    !notification.read ? 'bg-slate-700/30' : ''
-                  }`}
-                >
-                  <div className="flex gap-3">
-                    <div className="text-2xl flex-shrink-0">
-                      {getNotificationIcon(notification.type)}
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <p className="text-white text-sm mb-1">
-                        {notification.message}
-                      </p>
+              {allNotifications.map((notification) => {
+                const productImage = getProductImage(notification);
+                
+                return (
+                  <div
+                    key={notification._id}
+                    className={`p-4 hover:bg-slate-700/50 transition-colors ${
+                      !notification.read ? 'bg-slate-700/30' : ''
+                    }`}
+                  >
+                    <div className="flex gap-3">
+                      <div className="text-2xl flex-shrink-0">
+                        {getNotificationIcon(notification.type)}
+                      </div>
                       
-                      {notification.product && (
-                        <div className="flex items-center gap-2 mb-2">
-                          <img
-                            src={notification.product.image}
-                            alt={notification.product.title}
-                            className="w-12 h-12 object-cover rounded"
-                          />
-                          <p className="text-xs text-gray-400 truncate">
-                            {notification.product.title}
-                          </p>
-                        </div>
-                      )}
-                      
-                      <div className="flex items-center gap-3 text-xs text-gray-500">
-                        <span>{formatDate(notification.createdAt)}</span>
-                        {notification.bidAmount && (
-                          <span className="text-[#fa7942] font-medium">
-                            ${notification.bidAmount.toLocaleString()}
-                          </span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-white text-sm mb-1">
+                          {formatNotificationMessage(notification)}
+                        </p>
+                        
+                        {notification.product && (
+                          <div className="flex items-center gap-2 mb-2">
+                            {productImage && (
+                              <img
+                                src={productImage}
+                                alt={notification.product.title || 'Producto'}
+                                className="w-12 h-12 object-cover rounded"
+                              />
+                            )}
+                            <p className="text-xs text-gray-400 truncate">
+                              {notification.product.title || 'Producto'}
+                            </p>
+                          </div>
                         )}
+                        
+                        <div className="flex items-center gap-3 text-xs text-gray-500">
+                          <span>{formatDate(notification.createdAt)}</span>
+                          {notification.bidAmount && (
+                            <span className="text-[#fa7942] font-medium">
+                              ${notification.bidAmount.toLocaleString()}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-1">
+                        {!notification.read && (
+                          <button
+                            onClick={() => handleMarkAsRead(notification._id)}
+                            className="p-1.5 hover:bg-slate-600 rounded transition-colors"
+                            title="Marcar como leída"
+                          >
+                            <Check className="w-4 h-4 text-green-500" />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDelete(notification._id)}
+                          className="p-1.5 hover:bg-slate-600 rounded transition-colors"
+                          title="Eliminar"
+                        >
+                          <Trash2 className="w-4 h-4 text-red-500" />
+                        </button>
                       </div>
                     </div>
-
-                    <div className="flex flex-col gap-1">
-                      {!notification.read && (
-                        <button
-                          onClick={() => handleMarkAsRead(notification._id)}
-                          className="p-1.5 hover:bg-slate-600 rounded transition-colors"
-                          title="Marcar como leída"
-                        >
-                          <Check className="w-4 h-4 text-green-500" />
-                        </button>
-                      )}
-                      <button
-                        onClick={() => handleDelete(notification._id)}
-                        className="p-1.5 hover:bg-slate-600 rounded transition-colors"
-                        title="Eliminar"
-                      >
-                        <Trash2 className="w-4 h-4 text-red-500" />
-                      </button>
-                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

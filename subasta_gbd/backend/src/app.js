@@ -10,6 +10,7 @@ import authRoutes from './routes/auth.routes.js';
 import productsRoutes from './routes/products.route.js';
 import bidsRoutes from './routes/bids.routes.js';
 import notificationsRoutes from './routes/notifications.routes.js';
+import winsRoutes from './routes/wins.routes.js';
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use("/api", authRoutes);
 app.use("/api", productsRoutes);
 app.use("/api", bidsRoutes);
 app.use("/api", notificationsRoutes);
+app.use("/api", winsRoutes); // ← ESTA LÍNEA FALTABA
 
 // Socket.IO - Manejo de conexiones
 const connectedUsers = new Map(); // userId -> socketId
