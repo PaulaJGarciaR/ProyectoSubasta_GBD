@@ -25,6 +25,10 @@ export const createProductSchema = z.object({
       message: "La imagen debe ser una URL válida",
     }),
 
+  category: z.string({
+    required_error: "La categoria es requerido",
+  }),
+
   startingPrice: z
     .number({
       required_error: "El precio inicial es requerido",

@@ -9,3 +9,9 @@ export const getBidsByProductRequest = (productId) =>
 
 export const getMyBidsRequest = () => 
   axios.get('/my-bids');
+
+export const acceptBidRequest = (productId) => 
+  axios.post(`/products/${productId}/accept-bid`);
+
+export const cancelAuctionRequest = (productId, reason) => 
+  axios.post(`/products/${productId}/cancel`, { reason });
