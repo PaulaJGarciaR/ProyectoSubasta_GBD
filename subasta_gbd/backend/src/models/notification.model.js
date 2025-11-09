@@ -1,4 +1,3 @@
-// models/notification.model.js
 import mongoose from 'mongoose';
 
 const notificationSchema = new mongoose.Schema({
@@ -40,7 +39,6 @@ const notificationSchema = new mongoose.Schema({
   }
 });
 
-// Índice para consultas rápidas
 notificationSchema.index({ recipient: 1, read: 1, createdAt: -1 });
 
 export default mongoose.model('Notification', notificationSchema);

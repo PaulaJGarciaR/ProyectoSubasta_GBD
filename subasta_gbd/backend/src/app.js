@@ -1,4 +1,3 @@
-// backend/app.js
 import express from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
@@ -11,6 +10,7 @@ import productsRoutes from './routes/products.route.js';
 import bidsRoutes from './routes/bids.routes.js';
 import notificationsRoutes from './routes/notifications.routes.js';
 import winsRoutes from './routes/wins.routes.js';
+import analyticsRoutes from './routes/analytics.routes.js';
 
 const app = express();
 
@@ -35,7 +35,6 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
 
-// Hacer io accesible en las rutas
 app.set('io', io);
 
 // Rutas
@@ -44,18 +43,19 @@ app.use("/api", productsRoutes);
 app.use("/api", bidsRoutes);
 app.use("/api", notificationsRoutes);
 app.use("/api", winsRoutes); // ← ESTA LÍNEA FALTABA
+app.use('/api/analytics', analyticsRoutes);
 
 // Socket.IO - Manejo de conexiones
-const connectedUsers = new Map(); // userId -> socketId
+const connectedUsers = new Map(); 
 
 io.on('connection', (socket) => {
-  console.log('✅ Usuario conectado:', socket.id);
+  console.log('Usuario conectado:', socket.id);
 
   // Cuando un usuario se registra con su ID
   socket.on('register_user', (userId) => {
     connectedUsers.set(userId, socket.id);
-    console.log(`👤 Usuario ${userId} registrado con socket ${socket.id}`);
-    console.log(`📊 Total usuarios conectados: ${connectedUsers.size}`);
+    console.log(`Usuario ${userId} registrado con socket ${socket.id}`);
+    console.log(`Total usuarios conectados: ${connectedUsers.size}`);
   });
 
   // Desconexión
@@ -64,8 +64,8 @@ io.on('connection', (socket) => {
     for (const [userId, socketId] of connectedUsers.entries()) {
       if (socketId === socket.id) {
         connectedUsers.delete(userId);
-        console.log(`👋 Usuario ${userId} desconectado`);
-        console.log(`📊 Total usuarios conectados: ${connectedUsers.size}`);
+        console.log(`Usuario ${userId} desconectado`);
+        console.log(`Total usuarios conectados: ${connectedUsers.size}`);
         break;
       }
     }

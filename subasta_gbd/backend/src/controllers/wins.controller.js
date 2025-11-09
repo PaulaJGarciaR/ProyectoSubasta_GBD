@@ -1,8 +1,7 @@
-// backend/controllers/wins.controller.js
 import Product from '../models/product.model.js';
 import Bid from '../models/bid.model.js';
 
-// 🏆 Obtener todas las subastas ganadas por el usuario actual
+//Obtener todas las subastas ganadas por el usuario actual
 export const getMyWins = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -13,7 +12,7 @@ export const getMyWins = async (req, res) => {
       estado: 'Vendida'
     })
     .populate('user', 'username email')  // Datos del vendedor
-    .populate('winner', 'username email') // Datos del ganador (tú)
+    .populate('winner', 'username email') // Datos del ganador 
     .sort({ updatedAt: -1 }) // Más recientes primero
     .lean();
 
@@ -60,7 +59,7 @@ export const getMyWins = async (req, res) => {
   }
 };
 
-// 🏆 Obtener estadísticas de victorias
+//Obtener estadísticas de victorias
 export const getWinStats = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -157,7 +156,7 @@ export const getWinStats = async (req, res) => {
   }
 };
 
-// 🏆 Obtener detalle completo de una victoria específica
+// Obtener detalle completo de una victoria específica
 export const getWinDetails = async (req, res) => {
   try {
     const { productId } = req.params;

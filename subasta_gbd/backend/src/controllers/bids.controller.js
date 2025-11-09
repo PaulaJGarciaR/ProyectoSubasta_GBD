@@ -1,4 +1,3 @@
-// controllers/bids.controller.js
 import Bid from '../models/bid.model.js';
 import Product from '../models/product.model.js';
 import Notification from '../models/notification.model.js';
@@ -107,7 +106,7 @@ export const createBid = async (req, res) => {
       }
     }
 
-    // 3. Emitir actualización del producto a todos los usuarios conectados
+    // Emitir actualización del producto a todos los usuarios conectados
     io.emit('product_updated', {
       productId: product._id,
       currentPrice: product.currentPrice,

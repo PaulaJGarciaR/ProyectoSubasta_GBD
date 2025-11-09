@@ -1,4 +1,3 @@
-
 import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema(
@@ -53,7 +52,6 @@ const productSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      default: 'general'
     },
     moneda: {
       type: String,

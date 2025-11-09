@@ -1,4 +1,3 @@
-// src/components/NotificationsPanel.jsx
 import { useState, useEffect } from 'react';
 import { X, Check, Trash2, Bell, Loader2 } from 'lucide-react';
 import { useSocket } from '../context/SocketContext';
@@ -145,7 +144,6 @@ export default function NotificationsPanel({ isOpen, onClose }) {
   const getProductImage = (notification) => {
     if (!notification.product) return null;
     
-    // Si product.image es una cadena (URL directa)
     if (typeof notification.product.image === 'string') {
       return notification.product.image;
     }

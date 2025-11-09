@@ -1,4 +1,3 @@
-// src/context/SocketContext.jsx
 import { createContext, useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import { useAuth } from './AuthContext';
@@ -72,13 +71,12 @@ export const SocketProvider = ({ children }) => {
       console.log('Producto actualizado:', data);
     });
 
-    // ⭐ NUEVO: Escuchar cuando ganas una subasta
     newSocket.on('auction_won', (data) => {
-      console.log('🎉 ¡Has ganado una subasta!', data);
+      console.log('¡Has ganado una subasta!', data);
       
       // Mostrar notificación especial de victoria
       if (Notification.permission === 'granted') {
-        new Notification('🏆 ¡Felicidades! Has ganado', {
+        new Notification('¡Felicidades! Has ganado', {
           body: `Ganaste: ${data.productTitle} por ${data.finalPrice.toLocaleString()}`,
           icon: '/trophy.png',
           badge: '/trophy.png'
@@ -88,7 +86,7 @@ export const SocketProvider = ({ children }) => {
       // También mostrar SweetAlert
       if (typeof Swal !== 'undefined') {
         Swal.fire({
-          title: '🏆 ¡Felicidades!',
+          title: '¡Felicidades!',
           html: `
             <p class="text-lg mb-2">Has ganado la subasta de:</p>
             <p class="text-2xl font-bold text-green-400">${data.productTitle}</p>
@@ -103,7 +101,6 @@ export const SocketProvider = ({ children }) => {
       }
     });
 
-    // ⭐ NUEVO: Escuchar cuando se cierra una subasta
     newSocket.on('auction_closed', (data) => {
       console.log('Subasta cerrada:', data);
     });

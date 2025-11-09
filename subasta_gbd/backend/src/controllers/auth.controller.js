@@ -203,8 +203,6 @@ export const profile = async (req, res) => {
   }
 };
 
-// Agregar esta función en tu archivo auth.controller.js
-
 export const updateProfile = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -315,7 +313,6 @@ export const updateProfile = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
 
 export const verifyToken = async (req, res) => {
   const { token } = req.cookies;

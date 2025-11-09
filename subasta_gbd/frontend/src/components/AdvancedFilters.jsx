@@ -1,9 +1,9 @@
-// src/components/AdvancedFilters.jsx
 import { useState } from 'react';
 import { Search, Filter, X, DollarSign, MapPin, Tag, TrendingUp } from 'lucide-react';
 
-export default function AdvancedFilters({ onApplyFilters, onClearFilters }) {
+export default function AdvancedFilters({ onApplyFilters, onClearFilters,onCategorySelect }) {
   const [isOpen, setIsOpen] = useState(false);
+  
   const [filters, setFilters] = useState({
     search: '',
     category: '',
@@ -79,6 +79,15 @@ export default function AdvancedFilters({ onApplyFilters, onClearFilters }) {
     }
     return false;
   }).length;
+  
+   const handleCategoryChange = (e) => {
+  const { value } = e.target;
+  handleInputChange(e);
+  
+  if (value && onCategorySelect) {
+    onCategorySelect(value);
+  }
+};
 
   return (
     <div className="relative">
@@ -145,7 +154,7 @@ export default function AdvancedFilters({ onApplyFilters, onClearFilters }) {
               <select
                 name="category"
                 value={filters.category}
-                onChange={handleInputChange}
+                 onChange={handleCategoryChange}
                 className="w-full px-4 py-2.5 bg-[#13171f] border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#fa7942]"
               >
                 {categories.map(cat => (
