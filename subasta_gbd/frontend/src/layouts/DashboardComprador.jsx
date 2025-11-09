@@ -6,6 +6,7 @@ import {
   Bell,
   Search,
   X,
+  BarChart3,
   ChevronRight,
   TrendingUp,
   Clock,
@@ -18,7 +19,7 @@ import {
   ShoppingCart,
   MapPin,
   Phone,
-  Mail
+  Mail,
 } from "lucide-react";
 import UserProfile from "../pages/UserProfile";
 import MyWins from "../pages/MyWins";
@@ -30,11 +31,13 @@ import NotificationsPanel from "../components/NotificationsPanel";
 import Swal from "sweetalert2";
 import AdvancedFilters from "../components/AdvancedFilters";
 import { searchProductsRequest, getEndingSoonRequest } from "../api/products";
+import { useAnalytics } from "../hooks/useAnalytics";
 
 var moneda = "COP";
 
 function DashboardComprador() {
   const { logout, user } = useAuth();
+  const { trackCategoryClick, trackBidAttempt } = useAnalytics(user);
   const { unreadCount } = useSocket();
   const [currentPage, setCurrentPage] = useState("inicio");
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -209,6 +212,7 @@ function DashboardComprador() {
 // Componente de Inicio
 function InicioContent() {
   const [currentSlide] = useState(0);
+  const { trackCategoryClick, trackBidAttempt } = useAnalytics(User);
   const { products, getProducts } = useProducts();
   const { socket } = useSocket();
   const [imageIndex, setImageIndex] = useState(0);
@@ -485,6 +489,7 @@ function InicioContent() {
 
     try {
       const response = await createBidRequest(selectedProduct._id, bidValue);
+      await trackBidAttempt(selectedProduct._id, bidValue, true, null);
 
       await Swal.fire({
         title: "¡Puja registrada!",
@@ -504,6 +509,12 @@ function InicioContent() {
       await getProducts();
     } catch (error) {
       console.error("Error al crear puja:", error);
+      await trackBidAttempt(
+        selectedProduct._id,
+        bidValue,
+        false,
+        error.response?.data?.message
+      );
       Swal.fire({
         title: "Error",
         text: error.response?.data?.message || "No se pudo registrar la puja",
@@ -581,7 +592,6 @@ function InicioContent() {
           <div className="flex items-center justify-between mb-8">
             <h3 className="text-2xl md:text-3xl font-bold text-white">
               {isFiltering ? "Resultados de búsqueda" : "Subastas Disponibles"}{" "}
-              <span className="text-[#FF6F3C]">({displayProducts.length})</span>
             </h3>
             {isFiltering && (
               <button
@@ -597,6 +607,7 @@ function InicioContent() {
           <AdvancedFilters
             onApplyFilters={handleApplyFilters}
             onClearFilters={handleClearFilters}
+            onCategorySelect={trackCategoryClick}
           />
 
           {localLoading && (
@@ -654,7 +665,6 @@ function InicioContent() {
                             className={`absolute top-4  right-4 px-3 py-1.5 rounded-lg backdrop-blur-sm ${
                               estadoReal === "Activa"
                                 ? "bg-[#14b8a6] text-white font-bold"
-
                                 : estadoReal === "Vendida"
                                 ? "bg-orange-500/90"
                                 : "bg-gray-500/90"
@@ -966,7 +976,7 @@ function InicioContent() {
                   Ocaña
                 </li>
                 <li className="flex items-center gap-2">
-                  <Phone size={20}/>
+                  <Phone size={20} />
                   +57 316193884
                 </li>
                 <li className="flex items-center gap-2">

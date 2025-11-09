@@ -31,6 +31,7 @@ function ProductFormPage({ productToEdit, onClose }) {
         setValue("title", productToEdit.title);
         setValue("description", productToEdit.description);
         setValue("image", productToEdit.image);
+        setValue("category", productToEdit.category || "todos");
         setValue("startingPrice", productToEdit.startingPrice);
         setValue("dateStart", formatDateForInput(productToEdit.dateStart));
         setValue("dateEnd", formatDateForInput(productToEdit.dateEnd));
@@ -40,6 +41,7 @@ function ProductFormPage({ productToEdit, onClose }) {
         setValue("title", product.title);
         setValue("description", product.description);
         setValue("image", product.image);
+        setValue("category", product.category || "todos");
         setValue("startingPrice", product.startingPrice);
         setValue("dateStart", product.dateStart);
         setValue("dateEnd", product.dateEnd);

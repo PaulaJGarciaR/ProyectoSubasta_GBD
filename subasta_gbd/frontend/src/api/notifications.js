@@ -3,16 +3,16 @@
 
 // Obtener todas las notificaciones del usuario
 export const getNotificationsRequest = () => 
-  axios.get('/notifications');  // Ya está en la ruta correcta
+  axios.get('/notifications');  
 
 // Marcar una notificación como leída
 export const   markAsReadRequest = (notificationId) => 
-  axios.patch(`/notifications/${notificationId}/read`);  // Ruta correcta según el backend
+  axios.patch(`/notifications/${notificationId}/read`); 
 
 // Marcar todas las notificaciones como leídas
 export const  markAllAsReadRequest = () => 
-  axios.patch('/notifications/read-all');  // Ruta correcta según el backend
+  axios.patch('/notifications/read-all'); 
 
 // Eliminar una notificación
 export const deleteNotificationRequest = (notificationId) => 
-  axios.delete(`/notifications/${notificationId}`);  // Ruta correcta según el backend
+  axios.delete(`/notifications/${notificationId}`); 

@@ -2,12 +2,18 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    userType:{
-      type:String
+    userType: {
+      type: String
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false
     },
     firstName: {
       type: String,
-      required: true,
+      required: function() { 
+        return !this.isAdmin; 
+      },
       minlength: 3,
     },
     middleName: {
@@ -15,7 +21,9 @@ const userSchema = new mongoose.Schema(
     },
     lastName: {
       type: String,
-      required: true,
+      required: function() { 
+        return !this.isAdmin; 
+      },
       minlength: 3,
     },
     secondLastName: {
@@ -23,39 +31,53 @@ const userSchema = new mongoose.Schema(
     },
     documentType: {
       type: String,
-      required: true,
+      required: function() { 
+        return !this.isAdmin; 
+      },
     },
     documentNumber: {
       type: String,
-      required: true,
+      required: function() { 
+        return !this.isAdmin; 
+      },
       unique: true,
+      sparse: true,
       minlength: 10,
     },
     documentIssueDate: {
       type: Date,
-      required: true,
+      required: function() { 
+        return !this.isAdmin; 
+      },
     },
     country: {
       type: String,
-      required: true,
+      required: function() { 
+        return !this.isAdmin; 
+      },
       minlength: 3,
     },
     state: {
       type: String,
-      required: true,
+      required: function() { 
+        return !this.isAdmin; 
+      },
       minlength: 3,
     },
     city: {
       type: String,
-      required: true,
+      required: function() { 
+        return !this.isAdmin; 
+      },
       minlength: 3,
     },
     address: {
       type: String,
-      required: true,
+      required: function() { 
+        return !this.isAdmin; 
+      },
       minlength: 3,
     },
-
     email: {
       type: String,
       required: true,
@@ -63,13 +85,16 @@ const userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      required: true,
+      required: function() { 
+        return !this.isAdmin; 
+      },
       minlength: 10,
     },
-
     birthDate: {
       type: Date,
-      required: true,
+      required: function() { 
+        return !this.isAdmin; 
+      },
     },
     password: {
       type: String,
@@ -77,10 +102,10 @@ const userSchema = new mongoose.Schema(
       minlength: 8,
       match: /^(?=.*[0-9])(?=.*[!@#$%^&*])/,
     },
-    personType:{
-      type:String,
+    personType: {
+      type: String,
     },
-     nitPersonaNatural: {
+    nitPersonaNatural: {
       type: String,
       sparse: true,
       required: false,
@@ -91,11 +116,10 @@ const userSchema = new mongoose.Schema(
       required: false,
       minlength: 3,
     },
-     sociedad: {
+    sociedad: {
       type: String,
       required: false,
     },
-
     nitPersonaJuridica: {
       type: String,
       sparse: true,
@@ -107,8 +131,8 @@ const userSchema = new mongoose.Schema(
       sparse: true,
       required: false,
     },
-    fechaDeConstitucion:{
-       type: Date,
+    fechaDeConstitucion: {
+      type: Date,
       required: false,
     },
   },

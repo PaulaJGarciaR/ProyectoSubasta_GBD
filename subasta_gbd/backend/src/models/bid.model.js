@@ -1,4 +1,3 @@
-// models/bid.model.js
 import mongoose from 'mongoose';
 
 const bidSchema = new mongoose.Schema({
@@ -23,7 +22,6 @@ const bidSchema = new mongoose.Schema({
   }
 });
 
-// Índices para consultas rápidas
 bidSchema.index({ product: 1, createdAt: -1 });
 bidSchema.index({ bidder: 1, createdAt: -1 });
 

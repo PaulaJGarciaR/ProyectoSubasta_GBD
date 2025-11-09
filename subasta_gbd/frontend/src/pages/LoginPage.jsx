@@ -29,8 +29,7 @@ function LoginPage() {
   useEffect(() => {
     if (isAuthenticated && user) {
       console.log("Usuario autenticado:", user);
-
-      // Mostrar mensaje de éxito antes de redirigir
+      
       Swal.fire({
         title: "¡Autenticación Exitosa!",
         color: "#fff",
@@ -47,19 +46,21 @@ function LoginPage() {
         timer: 3000,
         timerProgressBar: true,
       }).then(() => {
-        // Redirigir según el userType después de cerrar el modal
-        switch (user.userType) {
-          case "vendedor":
-          case "Vendedor":
-            navigate("/dashboardvendedor");
-            break;
-          case "comprador":
-          case "Comprador":
-            navigate("/dashboardcomprador");
-            break;
-          default:
-            navigate("/dashboardvendedor");
-        }
+         if (user.isAdmin || user.userType === "admin") {
+          navigate("/dashboardadmin");
+        } else {
+          switch (user.userType) {
+            case "vendedor":
+            case "Vendedor":
+              navigate("/dashboardvendedor");
+              break;
+            case "comprador":
+            case "Comprador":
+              navigate("/dashboardcomprador");
+              break;
+            default:
+              navigate("/dashboardvendedor");
+          }}
       });
     }
   }, [isAuthenticated, user, navigate]);

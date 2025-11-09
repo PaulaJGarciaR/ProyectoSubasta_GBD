@@ -61,7 +61,6 @@ export default function MyWinsPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <Trophy className="w-8 h-8 text-[#fa7942]" />
             <h1 className="text-3xl font-bold text-white">Mis Subastas Ganadas</h1>
           </div>
           <p className="text-gray-400">Historial de todas tus victorias</p>

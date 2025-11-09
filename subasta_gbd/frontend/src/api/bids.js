@@ -1,4 +1,3 @@
-// src/api/bids.js
 import axios from './axios';
 
 export const createBidRequest = (productId, amount) => 

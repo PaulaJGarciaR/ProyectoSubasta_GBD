@@ -1,4 +1,3 @@
-// backend/routes/notifications.routes.js
 import { Router } from 'express';
 import { authRequired } from '../middlewares/validateToken.js';
 import { 
@@ -10,7 +9,7 @@ import {
 
 const router = Router();
 
-// Obtener notificaciones del usuario (requiere autenticación)
+// Obtener notificaciones del usuario 
 router.get('/notifications', authRequired, getNotifications);
 
 // Marcar una notificación como leída
