@@ -20,9 +20,11 @@ import {
   MapPin,
   Phone,
   Mail,
+  MessageCircle
 } from "lucide-react";
 import UserProfile from "../pages/UserProfile";
 import MyWins from "../pages/MyWins";
+import ForumPage from "../pages/ForumPage";
 import { useAuth } from "../context/AuthContext";
 import { useProducts } from "../context/ProductContext";
 import { useSocket } from "../context/SocketContext";
@@ -92,6 +94,8 @@ function DashboardComprador() {
         return <UserProfile />;
       case "mywins":
         return <MyWins />;
+        case "foro":
+        return <ForumPage />;
       default:
         return <InicioContent />;
     }
@@ -162,6 +166,16 @@ function DashboardComprador() {
                   </span>
                 )}
               </button>
+
+              <button
+                  onClick={() => handlePageChange("foro")}
+                  className="relative p-2 hover:bg-slate-700 rounded-lg transition-colors"
+                  title="Ir a Foro"
+                >
+                  <MessageCircle/>
+                </button>
+
+              
 
               <div className="flex items-center gap-3">
                 <button

@@ -10,6 +10,7 @@ import DashboardAdministrador from "./layouts/DashboardAdministrador"
 import ProductFormPage from "./pages/ProductFormPage";
 import { ProductProvider } from "./context/ProductContext";
 import { SocketProvider } from "./context/SocketContext"
+import ForumPage from "./pages/ForumPage";
 
 
 function App() {
@@ -40,7 +41,10 @@ function App() {
                   element={<DashboardComprador />}
                 ></Route>
                 <Route path="/dashboardadmin" element={<DashboardAdministrador/>}></Route>
-    
+                 <Route
+                  path="/foro"
+                  element={<ForumPage />}
+                ></Route>
               </Route>
             </Routes>
           </BrowserRouter>

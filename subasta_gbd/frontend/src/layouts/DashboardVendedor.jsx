@@ -1,17 +1,15 @@
 import React, { useState } from "react";
 import {
   Menu,
-  Home,
   Gavel,
-  Clock,
-  Trophy,
   User,
   Bell,
   Search,
   X,
   DollarSign,  
   Package,    
-  TrendingUp  
+  TrendingUp,
+  MessageCircle
 } from "lucide-react";
 import ProductsPage from "../pages/ProductPage";
 import UserProfile from "../pages/UserProfile";
@@ -19,6 +17,7 @@ import ProductFormPage from "../pages/ProductFormPage";
 import { useAuth } from "../context/AuthContext";
 import { useSocket } from "../context/SocketContext";
 import NotificationsPanel from "../components/NotificationsPanel";
+import ForumPage from "../pages/ForumPage";
 import Swal from 'sweetalert2';
 
 export default function DashboardVendedor() {
@@ -54,6 +53,8 @@ export default function DashboardVendedor() {
         return <ProductsPage key={refreshKey} onRefresh={refreshKey} />;
       case "perfil":
         return <UserProfile onBack={() => handlePageChange("inicio")} />;
+           case "foro":
+                return <ForumPage />;
       default:
         return <InicioContent onOpenModal={() => setShowModal(true)} refreshKey={refreshKey} />;
     }
@@ -160,6 +161,13 @@ export default function DashboardVendedor() {
                   </span>
                 )}
               </button>
+              <button
+                  onClick={() => handlePageChange("foro")}
+                  className="relative p-2 hover:bg-slate-700 rounded-lg transition-colors"
+                  title="Ir a Foro"
+                >
+                  <MessageCircle/>
+                </button>
 
               <div className="flex items-center gap-3">
                 <button

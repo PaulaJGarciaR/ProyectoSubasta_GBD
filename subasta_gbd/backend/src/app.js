@@ -11,6 +11,7 @@ import bidsRoutes from './routes/bids.routes.js';
 import notificationsRoutes from './routes/notifications.routes.js';
 import winsRoutes from './routes/wins.routes.js';
 import analyticsRoutes from './routes/analytics.routes.js';
+import forumRoutes from './routes/forum.routes.js';
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use("/api", productsRoutes);
 app.use("/api", bidsRoutes);
 app.use("/api", notificationsRoutes);
 app.use("/api", winsRoutes); // ← ESTA LÍNEA FALTABA
+app.use('/api', forumRoutes);
 app.use('/api/analytics', analyticsRoutes);
 
 // Socket.IO - Manejo de conexiones
