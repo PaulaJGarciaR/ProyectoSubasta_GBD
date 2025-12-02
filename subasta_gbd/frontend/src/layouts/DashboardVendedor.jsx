@@ -1,94 +1,112 @@
 import React, { useState } from "react";
 import {
   Menu,
+  Home,
   Gavel,
+  Clock,
+  Trophy,
   User,
   Bell,
   Search,
   X,
-  DollarSign,  
-  Package,    
+  DollarSign,
+  Package,
   TrendingUp,
-  MessageCircle
+  FileText,
+  MessageCircle,
 } from "lucide-react";
 import ProductsPage from "../pages/ProductPage";
 import UserProfile from "../pages/UserProfile";
-import ProductFormPage from "../pages/ProductFormPage"; 
+import Pqrs from "../pages/PQRS";
+import ProductFormPage from "../pages/ProductFormPage";
 import { useAuth } from "../context/AuthContext";
 import { useSocket } from "../context/SocketContext";
 import NotificationsPanel from "../components/NotificationsPanel";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 import ForumPage from "../pages/ForumPage";
-import Swal from 'sweetalert2';
 
 export default function DashboardVendedor() {
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState("inicio"); 
+  const [currentPage, setCurrentPage] = useState("inicio");
   const [showModal, setShowModal] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false); 
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const { logout, user } = useAuth();
   const { unreadCount } = useSocket();
-  const [refreshKey, setRefreshKey] = useState(0); 
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setRefreshKey(prev => prev + 1); 
+    setRefreshKey((prev) => prev + 1);
   };
 
   const handlePageChange = (newPage) => {
     if (newPage === currentPage) return;
-    
+
     setIsTransitioning(true);
     setTimeout(() => {
       setCurrentPage(newPage);
       setIsTransitioning(false);
     }, 150);
   };
-
   const renderContent = () => {
     switch (currentPage) {
       case "inicio":
-        return <InicioContent onOpenModal={() => setShowModal(true)} refreshKey={refreshKey} />;
+        return (
+          <InicioContent
+            onOpenModal={() => setShowModal(true)}
+            refreshKey={refreshKey}
+          />
+        );
       case "productos":
         return <ProductsPage key={refreshKey} onRefresh={refreshKey} />;
       case "perfil":
         return <UserProfile onBack={() => handlePageChange("inicio")} />;
-           case "foro":
-                return <ForumPage />;
+      case "pqrs":
+        return <Pqrs />;
+      case "foro":
+        return <ForumPage />;
       default:
-        return <InicioContent onOpenModal={() => setShowModal(true)} refreshKey={refreshKey} />;
+        return (
+          <InicioContent
+            onOpenModal={() => setShowModal(true)}
+            refreshKey={refreshKey}
+          />
+        );
     }
   };
 
   const handleLogout = async () => {
     const result = await Swal.fire({
-      title: '¿Cerrar sesión?',
-      text: '¿Estás seguro que deseas salir de tu cuenta?',
-      icon: 'question',
+      title: "¿Cerrar sesión?",
+      text: "¿Estás seguro que deseas salir de tu cuenta?",
+      icon: "question",
       showCancelButton: true,
-      confirmButtonColor: '#fa7942',
-      cancelButtonColor: '#64748b',
-      confirmButtonText: 'Sí, cerrar sesión',
-      cancelButtonText: 'Cancelar',
-      background: '#171d26',
-      color: '#f7f9fb',
+      confirmButtonColor: "#fa7942",
+      cancelButtonColor: "#64748b",
+      confirmButtonText: "Sí, cerrar sesión",
+      cancelButtonText: "Cancelar",
+      background: "#171d26",
+      color: "#f7f9fb",
       customClass: {
-        popup: 'border border-slate-700'
-      }
+        popup: "border border-slate-700",
+      },
     });
 
     if (result.isConfirmed) {
       await Swal.fire({
-        title: '¡Hasta pronto!',
-        text: 'Has cerrado sesión exitosamente',
-        icon: 'success',
-        confirmButtonColor: '#fa7942',
-        background: '#171d26',
-        color: '#f7f9fb',
+        title: "¡Hasta pronto!",
+        text: "Has cerrado sesión exitosamente",
+        icon: "success",
+        confirmButtonColor: "#fa7942",
+        background: "#171d26",
+        color: "#f7f9fb",
         timer: 1500,
-        showConfirmButton: false
+        showConfirmButton: false,
       });
-      
+
       logout();
     }
   };
@@ -110,7 +128,10 @@ export default function DashboardVendedor() {
             <div className="flex items-center justify-between border-slate-700">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-[#fa7942] rounded-lg flex items-center justify-center">
-                  <button className="cursor-pointer" onClick={() => handlePageChange("inicio")}>
+                  <button
+                    className="cursor-pointer"
+                    onClick={() => handlePageChange("inicio")}
+                  >
                     <Gavel className="w-6 h-6" />
                   </button>
                 </div>
@@ -137,37 +158,34 @@ export default function DashboardVendedor() {
               <Menu className="w-6 h-6" />
             </button>
 
-            <div className="flex-1 max-w-xl mx-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="Buscar subastas..."
-                  className="w-full pl-10 pr-4 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                />
-              </div>
-            </div>
-
             <div className="flex items-center gap-4">
+               {/* Botón de pqrs */}
+            <button
+              onClick={() => handlePageChange("pqrs")}
+              className="cursor-pointer relative p-2 hover:bg-slate-700 rounded-lg transition-colors"
+            >
+              <FileText className="w-5 h-5" />
+            </button>
+
+            <button
+              onClick={() => handlePageChange("foro")}
+              className="relative p-2 hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
+              title="Ir a Foro"
+            >
+              <MessageCircle />
+            </button>
               {/* Botón de Notificaciones */}
-              <button 
+              <button
                 onClick={() => setShowNotifications(true)}
                 className="relative p-2 hover:bg-slate-700 rounded-lg transition-colors"
               >
                 <Bell className="w-6 h-6" />
                 {unreadCount > 0 && (
                   <span className="absolute top-0 right-0 w-5 h-5 bg-[#fa7942] rounded-full flex items-center justify-center text-xs font-bold">
-                    {unreadCount > 9 ? '9+' : unreadCount}
+                    {unreadCount > 9 ? "9+" : unreadCount}
                   </span>
                 )}
               </button>
-              <button
-                  onClick={() => handlePageChange("foro")}
-                  className="relative p-2 hover:bg-slate-700 rounded-lg transition-colors"
-                  title="Ir a Foro"
-                >
-                  <MessageCircle/>
-                </button>
 
               <div className="flex items-center gap-3">
                 <button
@@ -197,7 +215,11 @@ export default function DashboardVendedor() {
         </header>
 
         {/* Dynamic Content */}
-        <div className={`p-6 transition-opacity duration-150 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
+        <div
+          className={`p-6 transition-opacity duration-150 ${
+            isTransitioning ? "opacity-0" : "opacity-100"
+          }`}
+        >
           {renderContent()}
         </div>
       </main>
@@ -223,16 +245,16 @@ export default function DashboardVendedor() {
       )}
 
       {/* Panel de Notificaciones */}
-      <NotificationsPanel 
-        isOpen={showNotifications} 
-        onClose={() => setShowNotifications(false)} 
+      <NotificationsPanel
+        isOpen={showNotifications}
+        onClose={() => setShowNotifications(false)}
       />
     </div>
   );
 }
 
 // Componente de Inicio
-function InicioContent({ onOpenModal, refreshKey }) { 
+function InicioContent({ onOpenModal, refreshKey }) {
   return (
     <>
       <main className="px-8 py-4 w-full">
@@ -247,8 +269,8 @@ function InicioContent({ onOpenModal, refreshKey }) {
               </p>
             </div>
             <div>
-              <button 
-                onClick={onOpenModal} 
+              <button
+                onClick={onOpenModal}
                 className="bg-[#fa7942] flex px-4 py-2 rounded-lg font-semibold cursor-pointer hover:bg-[#ff9365] transition-colors"
               >
                 <svg
@@ -282,16 +304,15 @@ function InicioContent({ onOpenModal, refreshKey }) {
                   <p className="text-gray-500 text-sm font-medium mb-2">
                     Ganancias potenciales
                   </p>
-                  <h3 className="text-4xl font-bold text-white">
-                    $6145
-                  </h3>
+                  <h3 className="text-4xl font-bold text-white">$6145</h3>
                 </div>
                 <div className="bg-[#13171f] p-3 rounded-xl">
                   <DollarSign className="w-6 h-6 text-[#fa7942]" />
                 </div>
               </div>
               <p className="text-sm text-gray-500">
-                <span className="text-[#fa7942] font-medium">+12%</span> vs. mes anterior
+                <span className="text-[#fa7942] font-medium">+12%</span> vs. mes
+                anterior
               </p>
             </div>
 
@@ -302,17 +323,13 @@ function InicioContent({ onOpenModal, refreshKey }) {
                   <p className="text-gray-500 text-sm font-medium mb-2">
                     Subastas activas
                   </p>
-                  <h3 className="text-4xl font-bold text-white">
-                    5
-                  </h3>
+                  <h3 className="text-4xl font-bold text-white">5</h3>
                 </div>
                 <div className="bg-[#13171f] p-3 rounded-xl">
                   <Package className="w-6 h-6 text-[#fa7942]" />
                 </div>
               </div>
-              <p className="text-sm text-gray-500">
-                2 terminan pronto
-              </p>
+              <p className="text-sm text-gray-500">2 terminan pronto</p>
             </div>
 
             {/* Card 3 */}
@@ -322,9 +339,7 @@ function InicioContent({ onOpenModal, refreshKey }) {
                   <p className="text-gray-500 text-sm font-medium mb-2">
                     Total de ofertas
                   </p>
-                  <h3 className="text-4xl font-bold text-white">
-                    112
-                  </h3>
+                  <h3 className="text-4xl font-bold text-white">112</h3>
                 </div>
                 <div className="bg-[#13171f] p-3 rounded-xl">
                   <TrendingUp className="w-6 h-6 text-[#fa7942]" />
