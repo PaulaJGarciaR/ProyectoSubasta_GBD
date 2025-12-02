@@ -20,10 +20,12 @@ import {
   MapPin,
   Phone,
   Mail,
+  FileText,
   MessageCircle
 } from "lucide-react";
 import UserProfile from "../pages/UserProfile";
 import MyWins from "../pages/MyWins";
+import Pqrs from "../pages/PQRS";
 import ForumPage from "../pages/ForumPage";
 import { useAuth } from "../context/AuthContext";
 import { useProducts } from "../context/ProductContext";
@@ -34,6 +36,7 @@ import Swal from "sweetalert2";
 import AdvancedFilters from "../components/AdvancedFilters";
 import { searchProductsRequest, getEndingSoonRequest } from "../api/products";
 import { useAnalytics } from "../hooks/useAnalytics";
+
 
 var moneda = "COP";
 
@@ -94,6 +97,8 @@ function DashboardComprador() {
         return <UserProfile />;
       case "mywins":
         return <MyWins />;
+        case "pqrs":
+        return <Pqrs/>;
         case "foro":
         return <ForumPage />;
       default:
@@ -134,17 +139,6 @@ function DashboardComprador() {
               <Menu className="w-6 h-6" />
             </button>
 
-            <div className="flex-1 max-w-xl mx-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="Buscar subastas..."
-                  className="w-full pl-10 pr-4 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                />
-              </div>
-            </div>
-
             <div className="flex items-center gap-4">
               {/* Botón mis productos */}
               <button
@@ -153,6 +147,22 @@ function DashboardComprador() {
               >
                 <ShoppingCart className="w-6 h-6" />
               </button>
+
+              {/* Botón de pqrs */}
+              <button
+              onClick={() => handlePageChange("pqrs")}
+              className="cursor-pointer relative p-2 hover:bg-slate-700 rounded-lg transition-colors"
+            >
+              <FileText className="w-5 h-5" />
+            </button>
+
+            <button
+              onClick={() => handlePageChange("foro")}
+              className="relative p-2 hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
+              title="Ir a Foro"
+            >
+              <MessageCircle />
+            </button>
 
               {/* Botón de Notificaciones */}
               <button
@@ -166,16 +176,6 @@ function DashboardComprador() {
                   </span>
                 )}
               </button>
-
-              <button
-                  onClick={() => handlePageChange("foro")}
-                  className="relative p-2 hover:bg-slate-700 rounded-lg transition-colors"
-                  title="Ir a Foro"
-                >
-                  <MessageCircle/>
-                </button>
-
-              
 
               <div className="flex items-center gap-3">
                 <button

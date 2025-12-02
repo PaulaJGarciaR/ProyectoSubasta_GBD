@@ -11,6 +11,7 @@ import ProductFormPage from "./pages/ProductFormPage";
 import { ProductProvider } from "./context/ProductContext";
 import { SocketProvider } from "./context/SocketContext"
 import ForumPage from "./pages/ForumPage";
+import PQRS from "./pages/PQRS";
 
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
                   path="/foro"
                   element={<ForumPage />}
                 ></Route>
+                <Route path="/pqrs" element={<PQRS/>} />
               </Route>
             </Routes>
           </BrowserRouter>

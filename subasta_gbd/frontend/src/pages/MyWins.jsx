@@ -1,7 +1,15 @@
-import { useState, useEffect } from 'react';
-import { getMyWinsRequest, getWinStatsRequest } from '../api/wins';
-import { Trophy, DollarSign, TrendingUp, Package, Calendar, Eye, Loader2, Award, Target, Percent } from 'lucide-react';
-import Swal from 'sweetalert2';
+import { useState, useEffect } from "react";
+import { getMyWinsRequest, getWinStatsRequest } from "../api/wins";
+import {
+  Trophy,
+  DollarSign,
+  TrendingUp,
+  Eye,
+  Loader2,
+  Target,
+} from "lucide-react";
+import Swal from "sweetalert2";
+import PQRSButton from "../components/PQRSButton";
 
 export default function MyWinsPage() {
   const [wins, setWins] = useState([]);
@@ -18,20 +26,21 @@ export default function MyWinsPage() {
       setLoading(true);
       const [winsResponse, statsResponse] = await Promise.all([
         getMyWinsRequest(),
-        getWinStatsRequest()
+        getWinStatsRequest(),
       ]);
-      
+
+      console.log("Wins Response:", winsResponse.data);
       setWins(winsResponse.data.wins || []);
       setStats(statsResponse.data.stats || null);
     } catch (error) {
-      console.error('Error al cargar victorias:', error);
+      console.error("Error al cargar victorias:", error);
       Swal.fire({
-        title: 'Error',
-        text: 'No se pudieron cargar tus victorias',
-        icon: 'error',
-        confirmButtonColor: '#fa7942',
-        background: '#171d26',
-        color: '#f7f9fb'
+        title: "Error",
+        text: "No se pudieron cargar tus victorias",
+        icon: "error",
+        confirmButtonColor: "#fa7942",
+        background: "#171d26",
+        color: "#f7f9fb",
       });
     } finally {
       setLoading(false);
@@ -39,10 +48,10 @@ export default function MyWinsPage() {
   };
 
   const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return new Date(date).toLocaleDateString("es-ES", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -61,7 +70,9 @@ export default function MyWinsPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-3xl font-bold text-white">Mis Subastas Ganadas</h1>
+            <h1 className="text-3xl font-bold text-white">
+              Mis Subastas Ganadas
+            </h1>
           </div>
           <p className="text-gray-400">Historial de todas tus victorias</p>
         </div>
@@ -75,7 +86,9 @@ export default function MyWinsPage() {
                 <div className="p-3 bg-[#ff9365]/10 rounded-lg">
                   <Trophy className="w-6 h-6 text-[#ff9365]" />
                 </div>
-                <span className="text-3xl font-bold text-white">{stats.totalWins}</span>
+                <span className="text-3xl font-bold text-white">
+                  {stats.totalWins}
+                </span>
               </div>
               <p className="text-sm text-gray-400">Total Victorias</p>
             </div>
@@ -112,7 +125,9 @@ export default function MyWinsPage() {
                 <div className="p-3 bg-[#ff9365]/10 rounded-lg">
                   <Target className="w-6 h-6 text-[#ff9365]" />
                 </div>
-                <span className="text-3xl font-bold text-white">{stats.successRate}</span>
+                <span className="text-3xl font-bold text-white">
+                  {stats.successRate}
+                </span>
               </div>
               <p className="text-sm text-gray-400">Tasa de Éxito</p>
             </div>
@@ -121,12 +136,16 @@ export default function MyWinsPage() {
 
         {/* Lista de Victorias */}
         <div>
-          <h2 className="text-2xl font-bold text-white mb-6">Todas mis Victorias</h2>
-          
+          <h2 className="text-2xl font-bold text-white mb-6">
+            Todas mis Victorias
+          </h2>
+
           {wins.length === 0 ? (
             <div className="text-center py-20">
               <Trophy className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <p className="text-gray-400 text-lg">Aún no has ganado ninguna subasta</p>
+              <p className="text-gray-400 text-lg">
+                Aún no has ganado ninguna subasta
+              </p>
               <p className="text-gray-500 text-sm mt-2">¡Sigue pujando!</p>
             </div>
           ) : (
@@ -143,7 +162,8 @@ export default function MyWinsPage() {
                       alt={win.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       onError={(e) => {
-                        e.target.src = 'https://via.placeholder.com/400x300?text=Sin+Imagen';
+                        e.target.src =
+                          "https://via.placeholder.com/400x300?text=Sin+Imagen";
                       }}
                     />
                     <div className="absolute top-3 right-3 px-3 py-1.5 rounded-lg bg-[#ff9365]">
@@ -154,7 +174,7 @@ export default function MyWinsPage() {
                   </div>
 
                   {/* Contenido */}
-                  <div className="p-5 space-y-4">
+                  <div className="p-5 space-y-3">
                     <h3 className="text-lg font-semibold text-white line-clamp-2">
                       {win.title}
                     </h3>
@@ -162,7 +182,9 @@ export default function MyWinsPage() {
                     <div className="space-y-2">
                       {/* Precio Final */}
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-400">Precio pagado</span>
+                        <span className="text-sm text-gray-400">
+                          Precio pagado
+                        </span>
                         <span className="text-xl font-bold text-[#ff9365]">
                           ${(win.finalPrice || 0).toLocaleString()}
                         </span>
@@ -171,30 +193,52 @@ export default function MyWinsPage() {
                       {/* Fecha de Victoria */}
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-400">Ganada el</span>
-                        <span className="text-gray-300">{formatDate(win.wonDate)}</span>
+                        <span className="text-gray-300">
+                          {formatDate(win.wonDate)}
+                        </span>
                       </div>
 
                       {/* Mis pujas totales */}
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-400">Mis pujas</span>
-                        <span className="text-white font-semibold">{win.myTotalBids}</span>
+                        <span className="text-white font-semibold">
+                          {win.myTotalBids}
+                        </span>
                       </div>
 
                       {/* Vendedor */}
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-400">Vendedor</span>
-                        <span className="text-gray-300">{win.user?.email || 'Desconocido'}</span>
+                        <span className="text-gray-300">
+                          {win.user?.email ||
+                            win.user?.username ||
+                            "Desconocido"}
+                        </span>
                       </div>
                     </div>
 
-                    {/* Botón Ver Detalles */}
-                    <button
-                      onClick={() => setSelectedWin(win)}
-                      className="w-full py-2.5 bg-[#fa7942] hover:bg-[#ff9365] rounded-lg text-white font-semibold transition-colors flex items-center justify-center gap-2"
-                    >
-                      <Eye size={18} />
-                      Ver Detalles
-                    </button>
+                    {/* Botones */}
+                    <div className="space-y-2">
+                      {/* Botón Ver Detalles */}
+                      <button
+                        onClick={() => setSelectedWin(win)}
+                        className="w-full py-2.5 bg-[#fa7942] hover:bg-[#ff9365] rounded-lg text-white font-semibold transition-colors flex items-center justify-center gap-2"
+                      >
+                        <Eye size={18} />
+                        Ver Detalles
+                      </button>
+
+                      <div className="flex justify-center">
+                        {win.user && (
+                          <PQRSButton
+                            product={win}
+                            targetUser={win.user}
+                            buttonText="Reportar problema"
+                            variant="secondary"
+                          />
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -203,29 +247,37 @@ export default function MyWinsPage() {
         </div>
       </div>
 
-      {/* Modal de Detalles (simplificado - puedes expandirlo) */}
+      {/* Modal de Detalles */}
       {selectedWin && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
           <div className="bg-[#171d26] rounded-xl max-w-2xl w-full p-6 border border-slate-700">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-white">Detalles de la Victoria</h3>
+              <h3 className="text-xl font-bold text-white">
+                Detalles de la Victoria
+              </h3>
               <button
                 onClick={() => setSelectedWin(null)}
-                className="text-gray-400 hover:text-white"
+                className="text-gray-400 hover:text-white text-2xl"
               >
                 ✕
               </button>
             </div>
-            
+
             <div className="space-y-4">
               <img
                 src={selectedWin.image}
                 alt={selectedWin.title}
                 className="w-full h-64 object-cover rounded-lg"
+                onError={(e) => {
+                  e.target.src =
+                    "https://via.placeholder.com/800x400?text=Sin+Imagen";
+                }}
               />
-              <h4 className="text-2xl font-bold text-white">{selectedWin.title}</h4>
+              <h4 className="text-2xl font-bold text-white">
+                {selectedWin.title}
+              </h4>
               <p className="text-gray-400">{selectedWin.description}</p>
-              
+
               <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-700">
                 <div>
                   <p className="text-sm text-gray-400">Precio Final</p>
@@ -235,16 +287,35 @@ export default function MyWinsPage() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-400">Mis Pujas</p>
-                  <p className="text-2xl font-bold text-blue-400">{selectedWin.myTotalBids}</p>
+                  <p className="text-2xl font-bold text-blue-400">
+                    {selectedWin.myTotalBids}
+                  </p>
                 </div>
               </div>
-              
-              <button
-                onClick={() => setSelectedWin(null)}
-                className="w-full py-3 bg-[#fa7942] hover:bg-[#ff9365] rounded-lg text-white font-semibold"
-              >
-                Cerrar
-              </button>
+
+              {/* Información del vendedor */}
+              {selectedWin.user && (
+                <div className="p-4 bg-[#13171f] rounded-lg border border-slate-700">
+                  <p className="text-sm text-gray-400 mb-2">Vendedor</p>
+                  <p className="text-white font-semibold">
+                    {selectedWin.user.name ||
+                      selectedWin.user.username ||
+                      "Sin nombre"}
+                  </p>
+                  <p className="text-gray-400 text-sm">
+                    {selectedWin.user.email}
+                  </p>
+                </div>
+              )}
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setSelectedWin(null)}
+                  className="flex-1 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-white font-semibold transition-colors"
+                >
+                  Cerrar
+                </button>
+              </div>
             </div>
           </div>
         </div>

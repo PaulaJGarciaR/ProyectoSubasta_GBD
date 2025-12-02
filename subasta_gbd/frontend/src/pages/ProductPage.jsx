@@ -16,6 +16,7 @@ import {
 import { Link } from "react-router-dom";
 import ProductFormPage from "./ProductFormPage";
 import Swal from "sweetalert2";
+import PQRSButton from '../components/PQRSButton';
 
 function ProductPage({ onRefresh }) {
   const { getMyProducts, products, deleteProduct } = useProducts();
@@ -141,7 +142,6 @@ function ProductPage({ onRefresh }) {
     }
   };
 
-  
   const handleAcceptBid = async (product) => {
     if (!product.currentBidder || product.totalBids === 0) {
       Swal.fire({
@@ -350,17 +350,18 @@ function ProductPage({ onRefresh }) {
                   </div>
 
                   {/* ⭐ NUEVA INFO: Precio Actual y Total de Pujas */}
-                  {product.currentPrice && product.currentPrice > product.startingPrice && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-[#9BAEBB] flex items-center gap-1">
-                        <TrendingUp className="w-4 h-4" />
-                        Precio Actual
-                      </span>
-                      <span className="text-lg font-bold text-green-400">
-                        ${product.currentPrice.toFixed(2)}
-                      </span>
-                    </div>
-                  )}
+                  {product.currentPrice &&
+                    product.currentPrice > product.startingPrice && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-[#9BAEBB] flex items-center gap-1">
+                          <TrendingUp className="w-4 h-4" />
+                          Precio Actual
+                        </span>
+                        <span className="text-lg font-bold text-green-400">
+                          ${product.currentPrice.toFixed(2)}
+                        </span>
+                      </div>
+                    )}
 
                   {product.totalBids > 0 && (
                     <div className="flex items-center justify-between">
@@ -400,7 +401,7 @@ function ProductPage({ onRefresh }) {
                   </button>
                 )}
 
-                <div className="border-t border-[#242a37] pt-4 flex gap-4 justify-center">
+                <div className="border-t border-[#242a37] pt-4 flex gap-4z justify-center">
                   <div className="flex justify-evenly w-full gap-2">
                     <button
                       onClick={() => handleEditClick(product)}
@@ -416,8 +417,6 @@ function ProductPage({ onRefresh }) {
                       Ver
                     </button>
 
-                    
-
                     <button
                       onClick={() => handleDelete(product._id, product.title)}
                       className="bg-red-600 hover:bg-red-700 text-white text-sm font-semibold py-2 px-3 rounded-lg transition-colors flex items-center justify-center"
@@ -426,6 +425,18 @@ function ProductPage({ onRefresh }) {
                     </button>
                   </div>
                 </div>
+                <div className="flex justify-center">
+                   {product.winner && (
+                          <PQRSButton
+                            product={product}
+                            targetUser={product.winner}
+                            buttonText="Reportar problema con comprador"
+                            variant="secondary"
+                          />
+                        )}
+
+                </div>
+               
               </div>
             </div>
           ))}
@@ -507,7 +518,11 @@ function ProductPage({ onRefresh }) {
                     <span>Oferta actual</span>
                   </div>
                   <p className="text-3xl font-bold text-[#4ade80]">
-                    ${(selectedProduct.currentPrice || selectedProduct.startingPrice).toFixed(2)}
+                    $
+                    {(
+                      selectedProduct.currentPrice ||
+                      selectedProduct.startingPrice
+                    ).toFixed(2)}
                   </p>
                 </div>
 
@@ -575,6 +590,7 @@ function ProductPage({ onRefresh }) {
                 </button>
               </div>
             </div>
+            
           </div>
         </div>
       )}
